@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:15
+    container_name: "database"
+    ports:
+      - '5441:5432'
+    environment:
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DATABASE=postgres
+    volumes:
+      - ./postgres-db:/var/lib/postgresql/data
+  backend:
+    image: ppo-backend:1.0.1
+    container_name: "backend"
+    ports:
+      - '8081:8081'
+      - '8082:8082'
+    volumes:
+      - ./backend/config.yml:/app/config.yml
+      - ./backend/logs/:/app/logs/
+    depends_on:
+      - db
+  frontend:
+    image: ppo-frontend
+    container_name: frontend
+    ports:
+      - '8080:80'
+    depends_on:
+      - backend
+    environment:
+      - API_URL=http://localhost:8081/
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "19090:9090"
+    volumes:
+      - ./backend/prometheus.yml:/etc/prometheus/prometheus.yml
+
+volumes:
+  postgres-db:
+    driver: local
