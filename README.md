@@ -123,3 +123,7 @@ Web MPA
 ## Диаграмма классов
 
 ![alt text](diagrams/uml.png "Диаграмма классов")
+
+## Макет
+
+Макет можно посмотреть [тут](https://www.figma.com/design/aea9eC2gIJPy7a05TspmWu/Untitled?node-id=0-1&node-type=canvas&t=FufmNMJPrnElPnZX-0). 
