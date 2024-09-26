@@ -100,12 +100,13 @@ func (mr *MockICompanyRepositoryMockRecorder) GetById(arg0, arg1 any) *gomock.Ca
 }
 
 // GetByOwnerId mocks base method.
-func (m *MockICompanyRepository) GetByOwnerId(arg0 context.Context, arg1 uuid.UUID, arg2 int, arg3 bool) ([]*domain.Company, error) {
+func (m *MockICompanyRepository) GetByOwnerId(arg0 context.Context, arg1 uuid.UUID, arg2 int, arg3 bool) ([]*domain.Company, int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByOwnerId", arg0, arg1, arg2, arg3)
 	ret0, _ := ret[0].([]*domain.Company)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret1, _ := ret[1].(int)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
 // GetByOwnerId indicates an expected call of GetByOwnerId.
@@ -210,12 +211,13 @@ func (mr *MockICompanyServiceMockRecorder) GetById(arg0, arg1 any) *gomock.Call 
 }
 
 // GetByOwnerId mocks base method.
-func (m *MockICompanyService) GetByOwnerId(arg0 context.Context, arg1 uuid.UUID, arg2 int, arg3 bool) ([]*domain.Company, error) {
+func (m *MockICompanyService) GetByOwnerId(arg0 context.Context, arg1 uuid.UUID, arg2 int, arg3 bool) ([]*domain.Company, int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByOwnerId", arg0, arg1, arg2, arg3)
 	ret0, _ := ret[0].([]*domain.Company)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret1, _ := ret[1].(int)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
 // GetByOwnerId indicates an expected call of GetByOwnerId.

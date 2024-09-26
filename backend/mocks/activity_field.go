@@ -70,18 +70,19 @@ func (mr *MockIActivityFieldRepositoryMockRecorder) DeleteById(arg0, arg1 any) *
 }
 
 // GetAll mocks base method.
-func (m *MockIActivityFieldRepository) GetAll(arg0 context.Context, arg1 int) ([]*domain.ActivityField, error) {
+func (m *MockIActivityFieldRepository) GetAll(arg0 context.Context, arg1 int, arg2 bool) ([]*domain.ActivityField, int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAll", arg0, arg1)
+	ret := m.ctrl.Call(m, "GetAll", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]*domain.ActivityField)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret1, _ := ret[1].(int)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
 // GetAll indicates an expected call of GetAll.
-func (mr *MockIActivityFieldRepositoryMockRecorder) GetAll(arg0, arg1 any) *gomock.Call {
+func (mr *MockIActivityFieldRepositoryMockRecorder) GetAll(arg0, arg1, arg2 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockIActivityFieldRepository)(nil).GetAll), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockIActivityFieldRepository)(nil).GetAll), arg0, arg1, arg2)
 }
 
 // GetById mocks base method.
@@ -180,18 +181,19 @@ func (mr *MockIActivityFieldServiceMockRecorder) DeleteById(arg0, arg1 any) *gom
 }
 
 // GetAll mocks base method.
-func (m *MockIActivityFieldService) GetAll(arg0 context.Context, arg1 int) ([]*domain.ActivityField, error) {
+func (m *MockIActivityFieldService) GetAll(arg0 context.Context, arg1 int, arg2 bool) ([]*domain.ActivityField, int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAll", arg0, arg1)
+	ret := m.ctrl.Call(m, "GetAll", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]*domain.ActivityField)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret1, _ := ret[1].(int)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
 // GetAll indicates an expected call of GetAll.
-func (mr *MockIActivityFieldServiceMockRecorder) GetAll(arg0, arg1 any) *gomock.Call {
+func (mr *MockIActivityFieldServiceMockRecorder) GetAll(arg0, arg1, arg2 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockIActivityFieldService)(nil).GetAll), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockIActivityFieldService)(nil).GetAll), arg0, arg1, arg2)
 }
 
 // GetById mocks base method.

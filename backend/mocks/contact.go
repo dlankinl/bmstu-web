@@ -85,18 +85,18 @@ func (mr *MockIContactsRepositoryMockRecorder) GetById(arg0, arg1 any) *gomock.C
 }
 
 // GetByOwnerId mocks base method.
-func (m *MockIContactsRepository) GetByOwnerId(arg0 context.Context, arg1 uuid.UUID, arg2 int, arg3 bool) ([]*domain.Contact, error) {
+func (m *MockIContactsRepository) GetByOwnerId(arg0 context.Context, arg1 uuid.UUID) ([]*domain.Contact, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByOwnerId", arg0, arg1, arg2, arg3)
+	ret := m.ctrl.Call(m, "GetByOwnerId", arg0, arg1)
 	ret0, _ := ret[0].([]*domain.Contact)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetByOwnerId indicates an expected call of GetByOwnerId.
-func (mr *MockIContactsRepositoryMockRecorder) GetByOwnerId(arg0, arg1, arg2, arg3 any) *gomock.Call {
+func (mr *MockIContactsRepositoryMockRecorder) GetByOwnerId(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByOwnerId", reflect.TypeOf((*MockIContactsRepository)(nil).GetByOwnerId), arg0, arg1, arg2, arg3)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByOwnerId", reflect.TypeOf((*MockIContactsRepository)(nil).GetByOwnerId), arg0, arg1)
 }
 
 // Update mocks base method.
@@ -180,18 +180,18 @@ func (mr *MockIContactsServiceMockRecorder) GetById(arg0, arg1 any) *gomock.Call
 }
 
 // GetByOwnerId mocks base method.
-func (m *MockIContactsService) GetByOwnerId(arg0 context.Context, arg1 uuid.UUID, arg2 int, arg3 bool) ([]*domain.Contact, error) {
+func (m *MockIContactsService) GetByOwnerId(arg0 context.Context, arg1 uuid.UUID) ([]*domain.Contact, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByOwnerId", arg0, arg1, arg2, arg3)
+	ret := m.ctrl.Call(m, "GetByOwnerId", arg0, arg1)
 	ret0, _ := ret[0].([]*domain.Contact)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetByOwnerId indicates an expected call of GetByOwnerId.
-func (mr *MockIContactsServiceMockRecorder) GetByOwnerId(arg0, arg1, arg2, arg3 any) *gomock.Call {
+func (mr *MockIContactsServiceMockRecorder) GetByOwnerId(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByOwnerId", reflect.TypeOf((*MockIContactsService)(nil).GetByOwnerId), arg0, arg1, arg2, arg3)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByOwnerId", reflect.TypeOf((*MockIContactsService)(nil).GetByOwnerId), arg0, arg1)
 }
 
 // Update mocks base method.
