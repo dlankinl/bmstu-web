@@ -42,7 +42,7 @@ func ReadConfig() (cfg *Config, err error) {
 	cfg = new(Config)
 
 	var f *os.File
-	f, err = os.Open("config.yml")
+	f, err = os.Open("config.yml.local")
 	if err != nil {
 		return nil, fmt.Errorf("открытие файла конфига: %w", err)
 	}

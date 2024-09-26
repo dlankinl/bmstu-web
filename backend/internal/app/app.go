@@ -9,10 +9,7 @@ import (
 	"ppo/internal/services/company"
 	"ppo/internal/services/contact"
 	"ppo/internal/services/fin_report"
-	"ppo/internal/services/review"
-	"ppo/internal/services/skill"
 	"ppo/internal/services/user"
-	"ppo/internal/services/user_skill"
 	"ppo/internal/storage/postgres"
 	"ppo/pkg/base"
 	"ppo/pkg/logger"
@@ -21,18 +18,15 @@ import (
 )
 
 type App struct {
-	Logger       logger.ILogger
-	AuthSvc      domain.IAuthService
-	UserSvc      domain.IUserService
-	FinSvc       domain.IFinancialReportService
-	ConSvc       domain.IContactsService
-	SkillSvc     domain.ISkillService
-	UserSkillSvc domain.IUserSkillService
-	ActFieldSvc  domain.IActivityFieldService
-	CompSvc      domain.ICompanyService
-	RevSvc       domain.IReviewService
-	Interactor   domain.IInteractor
-	Config       config.Config
+	Logger      logger.ILogger
+	AuthSvc     domain.IAuthService
+	UserSvc     domain.IUserService
+	FinSvc      domain.IFinancialReportService
+	ConSvc      domain.IContactsService
+	ActFieldSvc domain.IActivityFieldService
+	CompSvc     domain.ICompanyService
+	Interactor  domain.IInteractor
+	Config      config.Config
 }
 
 func NewApp(db *pgxpool.Pool, cfg *config.Config, log logger.ILogger) *App {
@@ -40,11 +34,8 @@ func NewApp(db *pgxpool.Pool, cfg *config.Config, log logger.ILogger) *App {
 	userRepo := postgres.NewUserRepository(db)
 	finRepo := postgres.NewFinReportRepository(db)
 	conRepo := postgres.NewContactRepository(db)
-	skillRepo := postgres.NewSkillRepository(db)
-	userSkillRepo := postgres.NewUserSkillRepository(db)
 	actFieldRepo := postgres.NewActivityFieldRepository(db)
 	compRepo := postgres.NewCompanyRepository(db)
-	revRepo := postgres.NewReviewRepository(db)
 
 	crypto := base.NewHashCrypto()
 
@@ -52,25 +43,19 @@ func NewApp(db *pgxpool.Pool, cfg *config.Config, log logger.ILogger) *App {
 	userSvc := user.NewService(userRepo, compRepo, actFieldRepo, log)
 	finSvc := fin_report.NewService(finRepo, log)
 	conSvc := contact.NewService(conRepo, log)
-	skillSvc := skill.NewService(skillRepo, log)
-	userSkillSvc := user_skill.NewService(userSkillRepo, userRepo, skillRepo, log)
 	actFieldSvc := activity_field.NewService(actFieldRepo, compRepo, log)
 	compSvc := company.NewService(compRepo, actFieldRepo, log)
-	revSvc := review.NewService(revRepo, log)
 	interactor := user_activity_field.NewInteractor(userSvc, actFieldSvc, compSvc, finSvc, log)
 
 	return &App{
-		Logger:       log,
-		AuthSvc:      authSvc,
-		UserSvc:      userSvc,
-		FinSvc:       finSvc,
-		ConSvc:       conSvc,
-		SkillSvc:     skillSvc,
-		UserSkillSvc: userSkillSvc,
-		ActFieldSvc:  actFieldSvc,
-		CompSvc:      compSvc,
-		RevSvc:       revSvc,
-		Interactor:   interactor,
-		Config:       *cfg,
+		Logger:      log,
+		AuthSvc:     authSvc,
+		UserSvc:     userSvc,
+		FinSvc:      finSvc,
+		ConSvc:      conSvc,
+		ActFieldSvc: actFieldSvc,
+		CompSvc:     compSvc,
+		Interactor:  interactor,
+		Config:      *cfg,
 	}
 }

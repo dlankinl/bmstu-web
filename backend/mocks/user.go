@@ -70,12 +70,13 @@ func (mr *MockIUserRepositoryMockRecorder) DeleteById(arg0, arg1 any) *gomock.Ca
 }
 
 // GetAll mocks base method.
-func (m *MockIUserRepository) GetAll(arg0 context.Context, arg1 int) ([]*domain.User, error) {
+func (m *MockIUserRepository) GetAll(arg0 context.Context, arg1 int) ([]*domain.User, int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAll", arg0, arg1)
 	ret0, _ := ret[0].([]*domain.User)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret1, _ := ret[1].(int)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
 // GetAll indicates an expected call of GetAll.
@@ -180,12 +181,13 @@ func (mr *MockIUserServiceMockRecorder) DeleteById(arg0, arg1 any) *gomock.Call 
 }
 
 // GetAll mocks base method.
-func (m *MockIUserService) GetAll(arg0 context.Context, arg1 int) ([]*domain.User, error) {
+func (m *MockIUserService) GetAll(arg0 context.Context, arg1 int) ([]*domain.User, int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAll", arg0, arg1)
 	ret0, _ := ret[0].([]*domain.User)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret1, _ := ret[1].(int)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
 // GetAll indicates an expected call of GetAll.

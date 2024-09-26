@@ -100,22 +100,6 @@ func toUserModel(user *User) domain.User {
 	}
 }
 
-func toSkillTransport(skill *domain.Skill) Skill {
-	return Skill{
-		ID:          skill.ID,
-		Name:        skill.Name,
-		Description: skill.Description,
-	}
-}
-
-func toSkillModel(skill *Skill) domain.Skill {
-	return domain.Skill{
-		ID:          skill.ID,
-		Name:        skill.Name,
-		Description: skill.Description,
-	}
-}
-
 func toContactTransport(contact *domain.Contact) Contact {
 	return Contact{
 		ID:      contact.ID,
@@ -172,20 +156,6 @@ func toCompanyModel(company *Company) domain.Company {
 	}
 }
 
-func toUserSkillTransport(userSkill *domain.UserSkill) UserSkill {
-	return UserSkill{
-		UserId:  userSkill.UserId,
-		SkillId: userSkill.SkillId,
-	}
-}
-
-func toUserSkillModel(userSkill *UserSkill) domain.UserSkill {
-	return domain.UserSkill{
-		UserId:  userSkill.UserId,
-		SkillId: userSkill.SkillId,
-	}
-}
-
 func toFinReportTransport(finReport *domain.FinancialReport) FinancialReport {
 	return FinancialReport{
 		ID:        finReport.ID,
@@ -214,29 +184,5 @@ func toPeriodTransport(per *domain.Period) Period {
 		StartQuarter: per.StartQuarter,
 		EndYear:      per.EndYear,
 		EndQuarter:   per.EndQuarter,
-	}
-}
-
-func toReviewTransport(rev *domain.Review) Review {
-	return Review{
-		ID:          rev.ID,
-		Target:      rev.Target,
-		Reviewer:    rev.Reviewer,
-		Pros:        rev.Pros,
-		Cons:        rev.Cons,
-		Description: rev.Description,
-		Rating:      rev.Rating,
-	}
-}
-
-func toReviewModel(rev *Review) domain.Review {
-	return domain.Review{
-		ID:          rev.ID,
-		Target:      rev.Target,
-		Reviewer:    rev.Reviewer,
-		Pros:        rev.Pros,
-		Cons:        rev.Cons,
-		Description: rev.Description,
-		Rating:      rev.Rating,
 	}
 }
