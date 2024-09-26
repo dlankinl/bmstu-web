@@ -85,21 +85,6 @@ func main() {
 
 	mux.Use(middleware.Logger)
 
-	mux.Route("/skills", func(r chi.Router) {
-		r.Get("/{id}", web.GetSkill(a))
-		r.Get("/", web.ListSkills(a))
-
-		r.Group(func(r chi.Router) {
-			r.Use(jwtauth.Verifier(tokenAuth))
-			r.Use(jwtauth.Authenticator(tokenAuth))
-			r.Use(web.ValidateAdminRoleJWT)
-
-			r.Post("/create", web.CreateSkill(a))
-			r.Delete("/{id}/delete", web.DeleteSkill(a))
-			r.Patch("/{id}/update", web.UpdateSkill(a))
-		})
-	})
-
 	mux.Route("/entrepreneurs", func(r chi.Router) {
 		r.Get("/{id}", web.GetEntrepreneur(a))
 		r.Get("/", web.ListEntrepreneurs(a))
@@ -169,19 +154,6 @@ func main() {
 		})
 	})
 
-	mux.Route("/user-skills", func(r chi.Router) {
-		r.Get("/", web.ListEntrepreneurSkills(a))
-
-		r.Group(func(r chi.Router) {
-			r.Use(jwtauth.Verifier(tokenAuth))
-			r.Use(jwtauth.Authenticator(tokenAuth))
-			r.Use(web.ValidateUserRoleJWT)
-
-			r.Post("/create", web.CreateUserSkill(a))
-			r.Delete("/{id}/delete", web.DeleteUserSkill(a))
-		})
-	})
-
 	mux.Route("/financials", func(r chi.Router) {
 		r.Group(func(r chi.Router) {
 			r.Use(jwtauth.Verifier(tokenAuth))
@@ -191,27 +163,6 @@ func main() {
 			r.Get("/", web.GetEntrepreneurFinancials(a))
 			r.Delete("/{id}/delete", web.DeleteFinReport(a))
 			r.Patch("/{id}/update", web.UpdateFinReport(a))
-		})
-	})
-
-	mux.Route("/reviews", func(r chi.Router) {
-		r.Get("/", web.GetEntrepreneurReviews(a))
-
-		r.Group(func(r chi.Router) {
-			r.Use(jwtauth.Verifier(tokenAuth))
-			r.Use(jwtauth.Authenticator(tokenAuth))
-			r.Use(web.ValidateUserRoleJWT)
-
-			r.Get("/my", web.GetAuthorReviews(a))
-			r.Post("/create", web.CreateReview(a))
-		})
-
-		r.Group(func(r chi.Router) {
-			r.Use(jwtauth.Verifier(tokenAuth))
-			r.Use(jwtauth.Authenticator(tokenAuth))
-			r.Use(web.ValidateAdminRoleJWT)
-
-			r.Delete("/{id}/delete", web.DeleteReview(a))
 		})
 	})
 
