@@ -165,17 +165,17 @@ func (mr *MockIFinancialReportServiceMockRecorder) CreateByPeriod(arg0, arg1 any
 }
 
 // DeleteById mocks base method.
-func (m *MockIFinancialReportService) DeleteById(arg0 context.Context, arg1 uuid.UUID) error {
+func (m *MockIFinancialReportService) DeleteById(arg0 context.Context, arg1, arg2 uuid.UUID) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteById", arg0, arg1)
+	ret := m.ctrl.Call(m, "DeleteById", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // DeleteById indicates an expected call of DeleteById.
-func (mr *MockIFinancialReportServiceMockRecorder) DeleteById(arg0, arg1 any) *gomock.Call {
+func (mr *MockIFinancialReportServiceMockRecorder) DeleteById(arg0, arg1, arg2 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteById", reflect.TypeOf((*MockIFinancialReportService)(nil).DeleteById), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteById", reflect.TypeOf((*MockIFinancialReportService)(nil).DeleteById), arg0, arg1, arg2)
 }
 
 // GetByCompany mocks base method.
@@ -209,15 +209,15 @@ func (mr *MockIFinancialReportServiceMockRecorder) GetById(arg0, arg1 any) *gomo
 }
 
 // Update mocks base method.
-func (m *MockIFinancialReportService) Update(arg0 context.Context, arg1 *domain.FinancialReport) error {
+func (m *MockIFinancialReportService) Update(arg0 context.Context, arg1 *domain.FinancialReport, arg2 uuid.UUID) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", arg0, arg1)
+	ret := m.ctrl.Call(m, "Update", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update.
-func (mr *MockIFinancialReportServiceMockRecorder) Update(arg0, arg1 any) *gomock.Call {
+func (mr *MockIFinancialReportServiceMockRecorder) Update(arg0, arg1, arg2 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockIFinancialReportService)(nil).Update), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockIFinancialReportService)(nil).Update), arg0, arg1, arg2)
 }
