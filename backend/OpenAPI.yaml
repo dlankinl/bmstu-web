@@ -1,0 +1,1550 @@
+openapi: 3.0.3
+info:
+  title: Сервис поиска партнеров-предпринимателей
+  description: |-
+  contact:
+    email: lankindl@student.bmstu.ru
+  version: 1.0.0
+externalDocs:
+  description: Gitlab source
+  url: https://git.iu7.bmstu.ru/ldl21u176/web
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+
+tags:
+  - name: entrepreneurs
+    description: Всё, что касается пользователей
+  - name: contacts
+    description: Средства связи с пользователями
+  - name: activity field
+    description: Сферы деятельности предприятий
+  - name: company
+    description: Всё, что касается предприятий
+  - name: financials
+    description: Всё, что касается финансовых результатов деятельности
+    
+paths:
+  /entrepreneurs:
+    get:
+      tags:
+        - entrepreneurs
+      summary: Получение списка предпринимателей
+      description: Получение списка предпринимателей с учетом пагинации и поиска по ФИО
+      operationId: getEntrepreneurs
+      parameters:
+        - description: Номер страницы
+          in: query
+          name: page
+        - description: Размер страницы
+          in: query
+          name: page_size
+        - description: Поиск по ФИО
+          in: query
+          name: name
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntrepreneursResponse'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /entrepreneurs/{id}:
+    get:
+      tags:
+        - entrepreneurs
+      summary: Получение информации о предпринимателе
+      description: Получение информации о предпринимателе
+      operationId: getEntrepreneurById
+      parameters:
+        - description: Идентификатор предпринимателя
+          in: path
+          name: id
+          required: true
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntrepreneurResponse'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    patch:
+      tags:
+        - entrepreneurs
+      summary: Обновление информации о предпринимателе
+      description: Обновление информации о предпринимателе
+      operationId: updateEntrepreneur
+      parameters:
+        - description:
+          in: path
+          name: id
+          type: string
+          format: uuid
+          required: true
+      requestBody:
+        description: Обновление информации о существующем пользователе
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Entrepreneur'
+        required: true
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Доступ к запрошенному ресурсу запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - entrepreneurs
+      summary: Удаление предпринимателя
+      description: Удаление предпринимателя
+      operationId: deleteEntrepreneur
+      parameters:
+        - description:
+          in: path
+          name: id
+          type: string
+          format: uuid
+          required: true
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Доступ к запрошенному ресурсу запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /entrepreneuers/{id}/companies:
+    get:
+      tags:
+        - entrepreneurs
+      summary: Получение списка предприятий предпринимателя
+      description: Получение списка предприятий предпринимателя
+      operationId: getEntrepreneursCompanies
+      parameters:
+        - description: Идентификатор предпринимателя
+          in: path
+          name: id
+          required: true
+        - description: Номер страницы
+          in: query
+          name: page
+        - description: Размер страницы
+          in: query
+          name: page_size
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntrepreneursCompanyResponse'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              
+  /entrepreneurs/{id}/rating:
+    get:
+      tags:
+        - entrepreneurs
+      summary: Вычисление рейтинга предпринимателя
+      description: Вычисление рейтинга предпринимателя
+      operationId: getEntrepreneurRating
+      parameters:
+        - description:
+          in: path
+          name: id
+          required: true
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RatingResponse'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /contacts:
+    get:
+      tags:
+        - contacts
+      summary: Получение средств связи предпринимателя
+      description: Получение средств связи предпринимателя
+      operationId: getEntrepreneursContacts
+      parameters:
+        - description: Идентификатор предпринимателя
+          in: query
+          name: entrepreneurs-id
+          type: string
+          format: uuid
+          required: true
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntrepreneursContactsResponse'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+    post:
+      tags:
+        - contacts
+      summary: Добавление средства связи
+      description: Добавление средства связи
+      operationId: createContact
+      requestBody:
+        description: Добавление средства связи
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateContactRequest'
+        required: true
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'        
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /contacts/{id}:
+    get:
+      tags:
+        - contacts
+      summary: Получение информации о средстве связи
+      description: Получение информации о средстве связи
+      operationId: getContactById
+      parameters:
+        - description: Идентификатор средства связи
+          in: path
+          name: id
+          type: string
+          format: uuid
+          required: true
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactResponse'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+    patch:
+      tags:
+        - contacts
+      summary: Обновление информации о средстве связи
+      description: Обновление информации о средстве связи
+      operationId: updateContact
+      parameters:
+        - description:
+          in: path
+          name: id
+          required: true
+      requestBody:
+        description: Обновление информации о средстве связи
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contact'
+        required: true
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+    delete:
+      tags:
+        - contacts
+      summary: Удаление средства связи
+      description: Удаление средства связи
+      operationId: deleteContact
+      parameters:
+        - description:
+          in: path
+          name: id
+          required: true
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'  
+  /activity_fields:
+    get:
+      tags:
+        - activity field
+      summary: Получение списка сфер деятельности
+      description: Получение списка сфер деятельности с учетом пагинации
+      operationId: getActivityFields
+      parameters:
+        - description: Номер страницы
+          in: query
+          name: page
+        - description: Размер страницы
+          in: query
+          name: page_size
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityFieldsResponse'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+    post:
+      tags:
+        - activity field
+      summary: Добавление сферы деятельности
+      description: Добавление сферы деятельности
+      operationId: createActivityField
+      requestBody:
+        description: Добавление сферы деятельности
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateActivityFieldRequest'
+        required: true
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Доступ к запрошенному ресурсу запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'  
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /activity_fields/{id}:
+    get:
+      tags:
+        - activity field
+      summary: Получение информации о сфере деятельности
+      description: Получение информации о сфере деятельности
+      operationId: getActivityFieldById
+      parameters:
+        - description: Идентификатор сферы деятельности
+          in: path
+          name: id
+          required: true
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityFieldResponse'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    patch:
+      tags:
+        - activity field
+      summary: Обновление информации о сфере деятельности
+      description: Обновление информации о сфере деятельности
+      operationId: updateActivityField
+      parameters:
+        - description:
+          in: path
+          name: id
+          required: true
+      requestBody:
+        description: Обновление информации о сфере деятельности
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivityField'
+        required: true
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Доступ к запрошенному ресурсу запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+    delete:
+      tags:
+        - activity field
+      summary: Удаление сферы деятельности
+      description: Удаление сферы деятельности
+      operationId: deleteActivityField
+      parameters:
+        - description:
+          in: path
+          name: id
+          required: true
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Доступ к запрошенному ресурсу запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error' 
+                
+  /companies:
+    post:
+      tags:
+        - company
+      summary: Добавление предприятия
+      description: Добавление предприятия
+      operationId: createCompany
+      requestBody:
+        description: Добавление предприятия
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCompanyRequest'
+        required: true
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /companies/{id}:
+    get:
+      tags:
+        - company
+      summary: Получение информации о предприятии
+      description: Получение информации о предприятии
+      operationId: getCompanyById
+      parameters:
+        - description: Идентификатор предприятия
+          in: path
+          name: id
+          required: true
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    patch:
+      tags:
+        - company
+      summary: Обновление информации о предприятии
+      description: Обновление информации о предприятии
+      operationId: updateCompany
+      parameters:
+        - description:
+          in: path
+          name: id
+          required: true
+      requestBody:
+        description: Обновление информации о предприятии
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Company'
+        required: true
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Доступ к запрошенному ресурсу запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+    delete:
+      tags:
+        - company
+      summary: Удаление предприятия
+      description: Удаление предприятия
+      operationId: deleteCompany
+      parameters:
+        - description:
+          in: path
+          name: id
+          required: true
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Доступ к запрошенному ресурсу запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /financials:
+    get:
+      tags:
+        - financials
+      summary: Получение финансового отчета предпринимателя
+      description: Получение финансового отчета предпринимателя
+      operationId: getEntrepreneurFinancials
+      parameters:
+        - description:
+          in: query
+          name: entrepreneur-id
+          required: true
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/EntrepreneurFinancialsResponse'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error' 
+  
+  /financials/{id}:
+    delete:
+      tags:
+        - financials
+      summary: Удаление финансового отчета
+      description: Удаление финансового отчета
+      operationId: deleteFinancialsById
+      parameters:
+        - description: Идентификатор отчета
+          in: path
+          name: id
+          required: true
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Success'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Доступ к запрошенному ресурсу запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error' 
+
+    patch:
+      tags:
+        - financials
+      summary: Обновление финансового отчета
+      description: Обновление финансового отчета
+      operationId: updateFinancialsById
+      parameters:
+        - description: Идентификатор отчета
+          in: path
+          name: id
+          required: true
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Success'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Доступ к запрошенному ресурсу запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /companies/{id}/financials:
+    get:
+      tags:
+        - financials
+      summary: Получение финансового отчета предприятия за период
+      description: Получение финансового отчета предприятия за период
+      operationId: getCompanyFinancialsByPeriod
+      parameters:
+        - description: Идентификатор предприятия
+          in: path
+          name: id
+        - description: Год начала
+          in: query
+          name: year-start
+        - description: Квартал начала
+          in: query
+          name: quarter-start
+        - description: Год конца
+          in: query
+          name: year-end
+        - description: Квартал конца
+          in: query
+          name: quarter-end
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/CompaniesFinancialsByPeriodResponse'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      tags:
+        - financials
+      summary: Добавление финансового отчета предприятия
+      description: Добавление финансового отчета предприятия
+      operationId: createCompanyFinancials
+      parameters:
+        - description: Идентификатор предприятия
+          in: path
+          name: id
+          required: true
+      requestBody:
+        description: Добавление финансового отчета предприятия
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCompanyFinancialsRequest'
+        required: true
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/CompaniesFinancialsByPeriodResponse'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Необходимо пройти auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+  /login:
+    post:
+      summary: Аутентификация
+      tags:
+        - auth
+      operationId: login
+      requestBody:
+        description: Аутентификация
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+  /signup:
+    post:
+      summary: Регистрация
+      tags:
+        - auth
+      operationId: signup
+      requestBody:
+        description: Регистрация
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Success'
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    ActivityField:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        name:
+          type: string
+          example: Hobby horsing
+        description:
+          type: string
+          example: Hobby horsing is a hobby with gymnastic elements which uses hobby horses, also known as stick horses. Movement sequences similar to those in show jumping or dressage are partly simulated in courses, without real horses being used.
+        cost:
+          type: string
+          example: 99999
+          
+    Company:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        ownerId: 
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        activityFieldId:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        name: 
+          type: string
+          example: OOO Romawka
+        city:
+          type: string
+          example: Moscow
+          
+    CompanyFinancials:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        companyId:
+          type: string
+          format: uuid
+        revenue:
+          type: number
+          example: 1.2
+        profit:
+          type: number
+          example: 0.8
+        year:
+          type: integer
+          example: 2022
+        quarter:
+          type: integer
+          example: 2
+  
+    Contact:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        ownerId:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        name:
+          type: string
+          example: telegram
+        value:
+          type: string
+          example: durov
+  
+    Entrepreneur:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        username:
+          type: string
+          example: dmitry
+        full_name:
+          type: string
+          example: Dmitry Lankin
+        gender:
+          type: string
+          example: m
+        birthday:
+          type: string
+          format: date
+        city:
+          type: string
+          example: Moscow
+        role:
+          type: string
+          example: admin
+    
+    Entrepreneurs:
+      type: object
+      properties:
+        numPages:
+          type: integer
+          example: 1
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/Entrepreneur'
+            
+    Period:
+      type: object
+      properties:
+        startYear:
+          type: integer
+          example: 2020
+        startQuarter:
+          type: integer
+          example: 1
+        endYear: 
+          type: integer
+          example: 2023
+        endQuarter:
+          type: integer
+          example: 3
+          
+    CreateActivityFieldRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Hobby horsing
+        description:
+          type: string
+          example: Hobby horsing is a hobby with gymnastic elements which uses hobby horses, also known as stick horses. Movement sequences similar to those in show jumping or dressage are partly simulated in courses, without real horses being used.
+        cost:
+          type: string
+          example: 99999
+        
+    CreateCompanyRequest:
+      type: object
+      properties:
+        ownerId:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        activityFieldId:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        name:
+          type: string
+          example: OOO Hello
+        city:
+          type: string
+          example: Dubai
+    
+    CreateCompanyFinancialsRequest:
+      type: object
+      properties:
+        companyId:
+          type: string
+          format: uuid
+        revenue:
+          type: number
+          example: 1.2
+        profit:
+          type: number
+          example: 0.8
+        year:
+          type: integer
+          example: 2022
+        quarter:
+          type: integer
+          example: 2
+          
+    CreateContactRequest:
+      type: object
+      properties:
+        owner_id:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        name:
+          type: string
+          example: telegram
+        value:
+          type: string
+          example: durov
+          
+    EntrepreneurResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/Entrepreneur'
+          
+    EntrepreneursResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          $ref: '#/components/schemas/Entrepreneurs'
+    
+    RatingResponse:
+      type: object
+      properties:
+        status: 
+          type: string
+          example: success
+        data:
+          type: object
+          properties:
+            rating:
+              type: number
+              example: 0.2
+              
+    CompaniesFinancialsByPeriodResponse:
+      type: object
+      properties:
+        status: 
+          type: string
+          example: success
+        data:
+          type: object
+          properties:
+            profit:
+              type: number
+              example: 2434.5
+            revenue:
+              type: number
+              example: 3543.7
+            period:
+              $ref: '#/components/schemas/Period'
+            reports:
+              type: array
+              items: 
+                $ref: '#/components/schemas/CompanyFinancials'
+    
+    EntrepreneurFinancialsResponse:
+      type: object
+      properties:
+        status: 
+          type: string
+          example: success
+        data:
+          type: object
+          properties:
+            costs:
+              type: number
+              example: 100
+            profit:
+              type: number
+              example: 150.0
+            revenue:
+              type: number
+              example: 250.0
+            taxLoad:
+              type: number
+              example: 0.0
+            taxes:
+              type: number
+              example: 0.0
+            
+    ActivityFieldResponse:
+      type: object
+      properties:
+        status: 
+          type: string
+          example: success
+        data:
+          type: object
+          properties:
+            contact:
+              $ref: '#/components/schemas/ActivityField'
+              
+    EntrepreneursCompanyResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          type: object
+          properties:
+            entrepreneurId: 
+              type: string
+              format: uuid
+              example: 550e8400-e29b-41d4-a716-446655440000
+            numPages:
+              type: integer
+              example: 23
+            companies:
+              type: array
+              items:
+                $ref: '#/components/schemas/Company'
+    
+    ContactResponse:
+      type: object
+      properties:
+        status: 
+          type: string
+          example: success
+        data:
+          type: object
+          properties:
+            contact:
+              $ref: '#/components/schemas/Contact'
+              
+    EntrepreneursContactsResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          type: object
+          properties:
+            entrepreneurId: 
+              type: string
+              format: uuid
+              example: 550e8400-e29b-41d4-a716-446655440000
+            contacts:
+              type: array
+              items:
+                $ref: '#/components/schemas/Contact'
+                
+    ActivityFieldsResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          $ref: '#/components/schemas/ActivityField'
+
+    Success:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+
+    Login:
+      type: object
+      properties:
+        login:
+          type: string
+          example: login
+        password:
+          type: string
+          format: password
+    
+    Register:
+      type: object
+      properties:
+        login:
+          type: string
+          example: login
+        password:
+          type: string
+          format: password
+          
+    LoginResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        token:
+          type: string
+          example: token123
+
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        error:
+          type: string
+          example: error text
