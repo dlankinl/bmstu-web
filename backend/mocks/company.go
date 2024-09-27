@@ -167,17 +167,17 @@ func (mr *MockICompanyServiceMockRecorder) Create(arg0, arg1 any) *gomock.Call {
 }
 
 // DeleteById mocks base method.
-func (m *MockICompanyService) DeleteById(arg0 context.Context, arg1 uuid.UUID) error {
+func (m *MockICompanyService) DeleteById(arg0 context.Context, arg1, arg2 uuid.UUID) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteById", arg0, arg1)
+	ret := m.ctrl.Call(m, "DeleteById", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // DeleteById indicates an expected call of DeleteById.
-func (mr *MockICompanyServiceMockRecorder) DeleteById(arg0, arg1 any) *gomock.Call {
+func (mr *MockICompanyServiceMockRecorder) DeleteById(arg0, arg1, arg2 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteById", reflect.TypeOf((*MockICompanyService)(nil).DeleteById), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteById", reflect.TypeOf((*MockICompanyService)(nil).DeleteById), arg0, arg1, arg2)
 }
 
 // GetAll mocks base method.
@@ -227,15 +227,15 @@ func (mr *MockICompanyServiceMockRecorder) GetByOwnerId(arg0, arg1, arg2, arg3 a
 }
 
 // Update mocks base method.
-func (m *MockICompanyService) Update(arg0 context.Context, arg1 *domain.Company) error {
+func (m *MockICompanyService) Update(arg0 context.Context, arg1 *domain.Company, arg2 uuid.UUID) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", arg0, arg1)
+	ret := m.ctrl.Call(m, "Update", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update.
-func (mr *MockICompanyServiceMockRecorder) Update(arg0, arg1 any) *gomock.Call {
+func (mr *MockICompanyServiceMockRecorder) Update(arg0, arg1, arg2 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockICompanyService)(nil).Update), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockICompanyService)(nil).Update), arg0, arg1, arg2)
 }
