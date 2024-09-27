@@ -39,6 +39,20 @@ func newConn(ctx context.Context, cfg *config.Database) (pool *pgxpool.Pool, err
 	return pool, nil
 }
 
+// @title Cервис поиска партнеров-предпринимателей
+// @version 1.0
+// @description Сервис призван помочь с поиском партнеров по бизнесу.
+
+// @contact.name Dmitry Lankin
+// @contact.url @lankind
+// @contact.email lankindl@student.bmstu.ru
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:8081
+// @BasePath /api/v1
+// @query.collection.format multi
 func main() {
 	cfg, err := config.ReadConfig()
 	if err != nil {
