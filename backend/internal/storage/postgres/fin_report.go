@@ -7,7 +7,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"math"
 	"ppo/domain"
+	"strings"
 )
 
 type FinReportRepository struct {
@@ -118,25 +120,44 @@ func (r *FinReportRepository) GetByCompany(ctx context.Context, companyId uuid.U
 }
 
 func (r *FinReportRepository) Update(ctx context.Context, finRep *domain.FinancialReport) (err error) {
-	query := `
-			update ppo.fin_reports
-			set 
-			    company_id = $1, 
-			    revenue = $2,
-			    costs = $3,
-			    year = $4,
-			    quarter = $5
-			where id = $6`
+	queryArgs := make([]any, 0)
+	queryElems := make([]string, 0)
+	query := "update ppo.fin_reports set "
+
+	i := 1
+	if finRep.CompanyID.ID() != 0 {
+		queryElems = append(queryElems, fmt.Sprintf("company_id = $%d", i))
+		queryArgs = append(queryArgs, finRep.CompanyID)
+		i++
+	}
+	if math.Abs(float64(finRep.Revenue)) > 0 {
+		queryElems = append(queryElems, fmt.Sprintf("revenue = $%d", i))
+		queryArgs = append(queryArgs, finRep.Revenue)
+		i++
+	}
+	if math.Abs(float64(finRep.Costs)) > 0 {
+		queryElems = append(queryElems, fmt.Sprintf("costs = $%d", i))
+		queryArgs = append(queryArgs, finRep.Costs)
+		i++
+	}
+	if finRep.Year != 0 {
+		queryElems = append(queryElems, fmt.Sprintf("year = $%d", i))
+		queryArgs = append(queryArgs, finRep.Year)
+		i++
+	}
+	if finRep.Quarter != 0 {
+		queryElems = append(queryElems, fmt.Sprintf("quarter = $%d", i))
+		queryArgs = append(queryArgs, finRep.Quarter)
+		i++
+	}
+	query += strings.Join(queryElems, ", ")
+	query += fmt.Sprintf(" where id = $%d", i)
+	queryArgs = append(queryArgs, finRep.ID)
 
 	_, err = r.db.Exec(
 		ctx,
 		query,
-		finRep.CompanyID,
-		finRep.Revenue,
-		finRep.Costs,
-		finRep.Year,
-		finRep.Quarter,
-		finRep.ID,
+		queryArgs...,
 	)
 	if err != nil {
 		return fmt.Errorf("обновление информации о финансовом отчете: %w", err)

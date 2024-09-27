@@ -65,6 +65,6 @@ type IFinancialReportService interface {
 	CreateByPeriod(context.Context, *FinancialReportByPeriod) error
 	GetById(context.Context, uuid.UUID) (*FinancialReport, error)
 	GetByCompany(context.Context, uuid.UUID, *Period) (*FinancialReportByPeriod, error)
-	Update(context.Context, *FinancialReport) error
-	DeleteById(context.Context, uuid.UUID) error
+	Update(context.Context, *FinancialReport, uuid.UUID) error
+	DeleteById(context.Context, uuid.UUID, uuid.UUID) error
 }

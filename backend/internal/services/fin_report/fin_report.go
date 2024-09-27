@@ -10,14 +10,16 @@ import (
 )
 
 type Service struct {
-	finRepo domain.IFinancialReportRepository
-	logger  logger.ILogger
+	finRepo  domain.IFinancialReportRepository
+	compRepo domain.ICompanyRepository
+	logger   logger.ILogger
 }
 
-func NewService(finRepo domain.IFinancialReportRepository, logger logger.ILogger) domain.IFinancialReportService {
+func NewService(finRepo domain.IFinancialReportRepository, compRepo domain.ICompanyRepository, logger logger.ILogger) domain.IFinancialReportService {
 	return &Service{
-		finRepo: finRepo,
-		logger:  logger,
+		finRepo:  finRepo,
+		compRepo: compRepo,
+		logger:   logger,
 	}
 }
 
@@ -104,8 +106,25 @@ func (s *Service) GetByCompany(ctx context.Context, companyId uuid.UUID, period 
 	return finReport, nil
 }
 
-func (s *Service) Update(ctx context.Context, finReport *domain.FinancialReport) (err error) {
+func (s *Service) Update(ctx context.Context, finReport *domain.FinancialReport, ownerId uuid.UUID) (err error) {
 	prompt := "FinReportUpdate"
+
+	reportDb, err := s.finRepo.GetById(ctx, finReport.ID)
+	if err != nil {
+		s.logger.Infof("%s: получение финансового отчета: %v", prompt, err)
+		return fmt.Errorf("получение финансового отчета: %w", err)
+	}
+
+	company, err := s.compRepo.GetById(ctx, reportDb.CompanyID)
+	if err != nil {
+		s.logger.Infof("%s: получение компании: %v", prompt, err)
+		return fmt.Errorf("получение компании: %w", err)
+	}
+
+	if company.OwnerID != ownerId {
+		s.logger.Infof("%s: только владелец компании может изменять финансовый отчет", prompt)
+		return fmt.Errorf("только владелец компании может изменять финансовый отчет")
+	}
 
 	err = s.finRepo.Update(ctx, finReport)
 	if err != nil {
@@ -116,8 +135,25 @@ func (s *Service) Update(ctx context.Context, finReport *domain.FinancialReport)
 	return nil
 }
 
-func (s *Service) DeleteById(ctx context.Context, id uuid.UUID) (err error) {
+func (s *Service) DeleteById(ctx context.Context, id uuid.UUID, ownerId uuid.UUID) (err error) {
 	prompt := "FinReportDeleteById"
+
+	report, err := s.finRepo.GetById(ctx, id)
+	if err != nil {
+		s.logger.Infof("%s: получение финансового отчета: %v", prompt, err)
+		return fmt.Errorf("получение финансового отчета: %w", err)
+	}
+
+	company, err := s.compRepo.GetById(ctx, report.CompanyID)
+	if err != nil {
+		s.logger.Infof("%s: получение компании: %v", prompt, err)
+		return fmt.Errorf("получение компании: %w", err)
+	}
+
+	if company.OwnerID != ownerId {
+		s.logger.Infof("%s: только владелец компании может удалять финансовые отчеты", prompt)
+		return fmt.Errorf("только владелец компании может удалять финансовые отчеты")
+	}
 
 	err = s.finRepo.DeleteById(ctx, id)
 	if err != nil {

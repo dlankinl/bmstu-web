@@ -57,6 +57,12 @@ func (s *Service) Create(ctx context.Context, data *domain.ActivityField) (err e
 func (s *Service) DeleteById(ctx context.Context, id uuid.UUID) (err error) {
 	prompt := "ActivityFieldDeleteById"
 
+	_, err = s.actFieldRepo.GetById(ctx, id)
+	if err != nil {
+		s.logger.Infof("%s: получение сферы деятельности по id: %v", prompt, err)
+		return fmt.Errorf("получение сферы деятельности по id: %w", err)
+	}
+
 	err = s.actFieldRepo.DeleteById(ctx, id)
 	if err != nil {
 		s.logger.Infof("%s: удаление сферы деятельности по id: %v", prompt, err)
@@ -68,6 +74,12 @@ func (s *Service) DeleteById(ctx context.Context, id uuid.UUID) (err error) {
 
 func (s *Service) Update(ctx context.Context, data *domain.ActivityField) (err error) {
 	prompt := "ActivityFieldUpdate"
+
+	_, err = s.actFieldRepo.GetById(ctx, data.ID)
+	if err != nil {
+		s.logger.Infof("%s: получение сферы деятельности по id: %v", prompt, err)
+		return fmt.Errorf("получение сферы деятельности по id: %w", err)
+	}
 
 	err = s.actFieldRepo.Update(ctx, data)
 	if err != nil {

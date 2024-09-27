@@ -24,6 +24,6 @@ type IContactsService interface {
 	Create(context.Context, *Contact) error
 	GetById(context.Context, uuid.UUID) (*Contact, error)
 	GetByOwnerId(context.Context, uuid.UUID) ([]*Contact, error)
-	Update(context.Context, *Contact) error
-	DeleteById(context.Context, uuid.UUID) error
+	Update(context.Context, *Contact, uuid.UUID) error
+	DeleteById(context.Context, uuid.UUID, uuid.UUID) error
 }

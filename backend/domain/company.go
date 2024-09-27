@@ -27,6 +27,6 @@ type ICompanyService interface {
 	GetById(context.Context, uuid.UUID) (*Company, error)
 	GetByOwnerId(context.Context, uuid.UUID, int, bool) ([]*Company, int, error)
 	GetAll(context.Context, int) ([]*Company, error)
-	Update(context.Context, *Company) error
-	DeleteById(context.Context, uuid.UUID) error
+	Update(context.Context, *Company, uuid.UUID) error
+	DeleteById(context.Context, uuid.UUID, uuid.UUID) error
 }

@@ -90,13 +90,26 @@ func (s *Service) GetAll(ctx context.Context, page int) (companies []*domain.Com
 	return companies, nil
 }
 
-func (s *Service) Update(ctx context.Context, company *domain.Company) (err error) {
+func (s *Service) Update(ctx context.Context, company *domain.Company, userId uuid.UUID) (err error) {
 	prompt := "CompanyUpdate"
 
-	_, err = s.actFieldRepo.GetById(ctx, company.ActivityFieldId)
+	compDb, err := s.companyRepo.GetById(ctx, company.ID)
 	if err != nil {
-		s.logger.Infof("%s: поиск сферы деятельности: %v", prompt, err)
-		return fmt.Errorf("обновление информации о компании (поиск сферы деятельности): %w", err)
+		s.logger.Infof("%s: получение компании по id: %v", prompt, err)
+		return fmt.Errorf("получение компании по id: %w", err)
+	}
+
+	if compDb.OwnerID != userId {
+		s.logger.Infof("%s: только владелец может обновлять информацию о своих компаниях", prompt)
+		return fmt.Errorf("только владелец может обновлять информацию о своих компаниях")
+	}
+
+	if company.ActivityFieldId.ID() != 0 {
+		_, err = s.actFieldRepo.GetById(ctx, company.ActivityFieldId)
+		if err != nil {
+			s.logger.Infof("%s: поиск сферы деятельности: %v", prompt, err)
+			return fmt.Errorf("обновление информации о компании (поиск сферы деятельности): %w", err)
+		}
 	}
 
 	err = s.companyRepo.Update(ctx, company)
@@ -108,8 +121,19 @@ func (s *Service) Update(ctx context.Context, company *domain.Company) (err erro
 	return nil
 }
 
-func (s *Service) DeleteById(ctx context.Context, id uuid.UUID) (err error) {
+func (s *Service) DeleteById(ctx context.Context, id uuid.UUID, ownerId uuid.UUID) (err error) {
 	prompt := "CompanyDeleteById"
+
+	company, err := s.companyRepo.GetById(ctx, id)
+	if err != nil {
+		s.logger.Infof("%s: удаление компании по id: %v", prompt, err)
+		return fmt.Errorf("удаление компании по id: %w", err)
+	}
+
+	if ownerId != company.OwnerID {
+		s.logger.Infof("%s: только владелец может удалять свои компании", prompt)
+		return fmt.Errorf("только владелец может удалять свои компании")
+	}
 
 	err = s.companyRepo.DeleteById(ctx, id)
 	if err != nil {

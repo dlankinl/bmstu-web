@@ -88,5 +88,11 @@ func (s *Service) Login(ctx context.Context, authInfo *domain.UserAuth) (token s
 		return "", fmt.Errorf("генерация токена: %w", err)
 	}
 
+	_, err = base.VerifyAuthToken(token, s.jwtKey)
+	if err != nil {
+		s.logger.Infof("%s: проверка JWT-токена: %v", prompt, err)
+		return "", fmt.Errorf("%s: проверка JWT-токена: %w", prompt, err)
+	}
+
 	return token, nil
 }

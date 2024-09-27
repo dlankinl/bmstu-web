@@ -95,8 +95,8 @@ func main() {
 			r.Use(jwtauth.Authenticator(tokenAuth))
 			r.Use(web.ValidateAdminRoleJWT)
 
-			r.Patch("/{id}/update", web.UpdateEntrepreneur(a))
-			r.Delete("/{id}/delete", web.DeleteEntrepreneur(a))
+			r.Patch("/{id}", web.UpdateEntrepreneur(a))
+			r.Delete("/{id}", web.DeleteEntrepreneur(a))
 		})
 	})
 
@@ -106,12 +106,11 @@ func main() {
 			r.Use(jwtauth.Authenticator(tokenAuth))
 			r.Use(web.ValidateUserRoleJWT)
 
-			r.Get("/{id}", web.GetContact(a))
 			r.Get("/", web.ListEntrepreneurContacts(a))
-
-			r.Post("/create", web.CreateContact(a))
-			r.Patch("/{id}/update", web.UpdateContact(a))
-			r.Delete("/{id}/delete", web.DeleteContact(a))
+			r.Post("/", web.CreateContact(a))
+			r.Get("/{id}", web.GetContact(a))
+			r.Patch("/{id}", web.UpdateContact(a))
+			r.Delete("/{id}", web.DeleteContact(a))
 		})
 	})
 
@@ -124,9 +123,9 @@ func main() {
 			r.Use(jwtauth.Authenticator(tokenAuth))
 			r.Use(web.ValidateAdminRoleJWT)
 
-			r.Post("/create", web.CreateActivityField(a))
-			r.Patch("/{id}/update", web.UpdateActivityField(a))
-			r.Delete("/{id}/delete", web.DeleteActivityField(a))
+			r.Post("/", web.CreateActivityField(a))
+			r.Patch("/{id}", web.UpdateActivityField(a))
+			r.Delete("/{id}", web.DeleteActivityField(a))
 		})
 	})
 
@@ -139,9 +138,9 @@ func main() {
 			r.Use(jwtauth.Authenticator(tokenAuth))
 			r.Use(web.ValidateUserRoleJWT)
 
-			r.Post("/create", web.CreateCompany(a))
-			r.Patch("/{id}/update", web.UpdateCompany(a))
-			r.Delete("/{id}/delete", web.DeleteCompany(a))
+			r.Post("/", web.CreateCompany(a))
+			r.Patch("/{id}", web.UpdateCompany(a))
+			r.Delete("/{id}", web.DeleteCompany(a))
 		})
 
 		r.Route("/{id}/financials", func(r chi.Router) {
@@ -149,8 +148,8 @@ func main() {
 			r.Use(jwtauth.Authenticator(tokenAuth))
 			r.Use(web.ValidateUserRoleJWT)
 
-			r.Post("/create", web.CreateReport(a))
-			r.Get("/{year-start}_{quarter-start}-{year-end}_{quarter-end}", web.ListCompanyReports(a))
+			r.Post("/", web.CreateReport(a))
+			r.Get("/", web.ListCompanyReports(a))
 		})
 	})
 
@@ -161,8 +160,8 @@ func main() {
 			r.Use(web.ValidateUserRoleJWT)
 
 			r.Get("/", web.GetEntrepreneurFinancials(a))
-			r.Delete("/{id}/delete", web.DeleteFinReport(a))
-			r.Patch("/{id}/update", web.UpdateFinReport(a))
+			r.Delete("/{id}", web.DeleteFinReport(a))
+			r.Patch("/{id}", web.UpdateFinReport(a))
 		})
 	})
 

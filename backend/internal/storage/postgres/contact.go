@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"ppo/domain"
+	"strings"
 )
 
 type ContactRepository struct {
@@ -96,21 +97,34 @@ func (r *ContactRepository) GetByOwnerId(ctx context.Context, id uuid.UUID) (con
 }
 
 func (r *ContactRepository) Update(ctx context.Context, contact *domain.Contact) (err error) {
-	query := `
-			update ppo.contacts
-			set 
-			    owner_id = $1,
-			    name = $2, 
-			    value = $3
-			where id = $4`
+	queryArgs := make([]any, 0)
+	queryElems := make([]string, 0)
+	query := "update ppo.contacts set "
+
+	i := 1
+	if contact.OwnerID.ID() != 0 {
+		queryElems = append(queryElems, fmt.Sprintf("owner_id = $%d", i))
+		queryArgs = append(queryArgs, contact.OwnerID)
+		i++
+	}
+	if contact.Name != "" {
+		queryElems = append(queryElems, fmt.Sprintf("name = $%d", i))
+		queryArgs = append(queryArgs, contact.Name)
+		i++
+	}
+	if contact.Value != "" {
+		queryElems = append(queryElems, fmt.Sprintf("value = $%d", i))
+		queryArgs = append(queryArgs, contact.Value)
+		i++
+	}
+	query += strings.Join(queryElems, ", ")
+	query += fmt.Sprintf(" where id = $%d", i)
+	queryArgs = append(queryArgs, contact.ID)
 
 	_, err = r.db.Exec(
 		ctx,
 		query,
-		contact.OwnerID,
-		contact.Name,
-		contact.Value,
-		contact.ID,
+		queryArgs...,
 	)
 	if err != nil {
 		return fmt.Errorf("обновление информации о средстве связи: %w", err)
