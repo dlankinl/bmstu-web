@@ -75,7 +75,7 @@ func getStringClaimFromJWT(ctx context.Context, claim string) (strVal string, er
 }
 
 func parsePeriodFromURL(r *http.Request) (period *domain.Period, err error) {
-	yearStartStr := chi.URLParam(r, "year-start")
+	yearStartStr := r.URL.Query().Get("start-year")
 	if yearStartStr == "" {
 		return nil, fmt.Errorf("empty year start")
 	}
@@ -85,7 +85,7 @@ func parsePeriodFromURL(r *http.Request) (period *domain.Period, err error) {
 		return nil, fmt.Errorf("converting start year to int: %w", err)
 	}
 
-	yearEndStr := chi.URLParam(r, "year-end")
+	yearEndStr := r.URL.Query().Get("end-year")
 	if yearEndStr == "" {
 		return nil, fmt.Errorf("empty year end")
 	}
@@ -95,7 +95,7 @@ func parsePeriodFromURL(r *http.Request) (period *domain.Period, err error) {
 		return nil, fmt.Errorf("converting end year to int: %w", err)
 	}
 
-	quarterStartStr := chi.URLParam(r, "quarter-start")
+	quarterStartStr := r.URL.Query().Get("start-quarter")
 	if quarterStartStr == "" {
 		return nil, fmt.Errorf("empty quarter start")
 	}
@@ -105,7 +105,7 @@ func parsePeriodFromURL(r *http.Request) (period *domain.Period, err error) {
 		return nil, fmt.Errorf("converting start quarter to int: %w, err")
 	}
 
-	quarterEndStr := chi.URLParam(r, "quarter-end")
+	quarterEndStr := r.URL.Query().Get("end-quarter")
 	if quarterEndStr == "" {
 		return nil, fmt.Errorf("empty quarter end")
 	}

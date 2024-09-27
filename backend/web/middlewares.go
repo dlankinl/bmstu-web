@@ -45,7 +45,7 @@ func ValidateUserRoleJWT(next http.Handler) http.Handler {
 		}
 
 		if role != "user" && role != "admin" {
-			errorResponse(w, fmt.Errorf("вам нужно авторизоваться, прежде чем сделать это").Error(), http.StatusForbidden)
+			errorResponse(w, fmt.Errorf("вам нужно авторизоваться, прежде чем сделать это").Error(), http.StatusUnauthorized)
 			return
 		}
 

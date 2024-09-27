@@ -10,22 +10,16 @@ import (
 type User struct {
 	ID       uuid.UUID `json:"id,omitempty"`
 	Username string    `json:"username,omitempty"`
-	FullName string    `json:"full_name,omitempty"`
+	FullName string    `json:"fullName,omitempty"`
 	Gender   string    `json:"gender,omitempty"`
 	Birthday time.Time `json:"birthday,omitempty"`
 	City     string    `json:"city,omitempty"`
 	Role     string    `json:"role,omitempty"`
 }
 
-type Skill struct {
-	ID          uuid.UUID `json:"id,omitempty"`
-	Name        string    `json:"name,omitempty"`
-	Description string    `json:"description,omitempty"`
-}
-
 type Contact struct {
 	ID      uuid.UUID `json:"id,omitempty"`
-	OwnerID uuid.UUID `json:"owner_id,omitempty"`
+	OwnerID uuid.UUID `json:"ownerId,omitempty"`
 	Name    string    `json:"name,omitempty"`
 	Value   string    `json:"value,omitempty"`
 }
@@ -39,20 +33,15 @@ type ActivityField struct {
 
 type Company struct {
 	ID              uuid.UUID `json:"id,omitempty"`
-	OwnerID         uuid.UUID `json:"owner_id,omitempty"`
-	ActivityFieldId uuid.UUID `json:"activity_field_id,omitempty"`
+	OwnerID         uuid.UUID `json:"ownerId,omitempty"`
+	ActivityFieldId uuid.UUID `json:"activityFieldId,omitempty"`
 	Name            string    `json:"name,omitempty"`
 	City            string    `json:"city,omitempty"`
 }
 
-type UserSkill struct {
-	UserId  uuid.UUID `json:"user_id,omitempty"`
-	SkillId uuid.UUID `json:"skill_id,omitempty"`
-}
-
 type FinancialReport struct {
 	ID        uuid.UUID `json:"id,omitempty"`
-	CompanyID uuid.UUID `json:"company_id,omitempty"`
+	CompanyID uuid.UUID `json:"companyId,omitempty"`
 	Revenue   float32   `json:"revenue,omitempty"`
 	Costs     float32   `json:"costs,omitempty"`
 	Year      int       `json:"year,omitempty"`
@@ -60,20 +49,10 @@ type FinancialReport struct {
 }
 
 type Period struct {
-	StartYear    int `json:"start_year"`
-	StartQuarter int `json:"start_quarter"`
-	EndYear      int `json:"end_year"`
-	EndQuarter   int `json:"end_quarter"`
-}
-
-type Review struct {
-	ID          uuid.UUID `json:"id"`
-	Target      uuid.UUID `json:"target_id"`
-	Reviewer    uuid.UUID `json:"reviewer_id"`
-	Pros        string    `json:"pros"`
-	Cons        string    `json:"cons"`
-	Description string    `json:"description"`
-	Rating      int       `json:"rating"`
+	StartYear    int `json:"startYear"`
+	StartQuarter int `json:"startQuarter"`
+	EndYear      int `json:"endYear"`
+	EndQuarter   int `json:"endQuarter"`
 }
 
 func toUserTransport(user *domain.User) User {
