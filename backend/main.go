@@ -99,88 +99,90 @@ func main() {
 
 	mux.Use(middleware.Logger)
 
-	mux.Route("/entrepreneurs", func(r chi.Router) {
-		r.Get("/{id}", web.GetEntrepreneur(a))
-		r.Get("/", web.ListEntrepreneurs(a))
-		r.Get("/{id}/rating", web.CalculateRating(a))
+	mux.Route("/api/v1", func(rOuter chi.Router) {
+		rOuter.Route("/entrepreneurs", func(r chi.Router) {
+			r.Get("/{id}", web.GetEntrepreneur(a))
+			r.Get("/", web.ListEntrepreneurs(a))
+			r.Get("/{id}/rating", web.CalculateRating(a))
 
-		r.Group(func(r chi.Router) {
-			r.Use(jwtauth.Verifier(tokenAuth))
-			r.Use(jwtauth.Authenticator(tokenAuth))
-			r.Use(web.ValidateAdminRoleJWT)
+			r.Group(func(r chi.Router) {
+				r.Use(jwtauth.Verifier(tokenAuth))
+				r.Use(jwtauth.Authenticator(tokenAuth))
+				r.Use(web.ValidateAdminRoleJWT)
 
-			r.Patch("/{id}", web.UpdateEntrepreneur(a))
-			r.Delete("/{id}", web.DeleteEntrepreneur(a))
+				r.Patch("/{id}", web.UpdateEntrepreneur(a))
+				r.Delete("/{id}", web.DeleteEntrepreneur(a))
+			})
 		})
+
+		rOuter.Route("/contacts", func(r chi.Router) {
+			r.Group(func(r chi.Router) {
+				r.Use(jwtauth.Verifier(tokenAuth))
+				r.Use(jwtauth.Authenticator(tokenAuth))
+				r.Use(web.ValidateUserRoleJWT)
+
+				r.Get("/", web.ListEntrepreneurContacts(a))
+				r.Post("/", web.CreateContact(a))
+				r.Get("/{id}", web.GetContact(a))
+				r.Patch("/{id}", web.UpdateContact(a))
+				r.Delete("/{id}", web.DeleteContact(a))
+			})
+		})
+
+		rOuter.Route("/activity_fields", func(r chi.Router) {
+			r.Get("/{id}", web.GetActivityField(a))
+			r.Get("/", web.ListActivityFields(a))
+
+			r.Group(func(r chi.Router) {
+				r.Use(jwtauth.Verifier(tokenAuth))
+				r.Use(jwtauth.Authenticator(tokenAuth))
+				r.Use(web.ValidateAdminRoleJWT)
+
+				r.Post("/", web.CreateActivityField(a))
+				r.Patch("/{id}", web.UpdateActivityField(a))
+				r.Delete("/{id}", web.DeleteActivityField(a))
+			})
+		})
+
+		rOuter.Route("/companies", func(r chi.Router) {
+			r.Get("/{id}", web.GetCompany(a))
+			r.Get("/", web.ListEntrepreneurCompanies(a))
+
+			r.Group(func(r chi.Router) {
+				r.Use(jwtauth.Verifier(tokenAuth))
+				r.Use(jwtauth.Authenticator(tokenAuth))
+				r.Use(web.ValidateUserRoleJWT)
+
+				r.Post("/", web.CreateCompany(a))
+				r.Patch("/{id}", web.UpdateCompany(a))
+				r.Delete("/{id}", web.DeleteCompany(a))
+			})
+
+			r.Route("/{id}/financials", func(r chi.Router) {
+				r.Use(jwtauth.Verifier(tokenAuth))
+				r.Use(jwtauth.Authenticator(tokenAuth))
+				r.Use(web.ValidateUserRoleJWT)
+
+				r.Post("/", web.CreateReport(a))
+				r.Get("/", web.ListCompanyReports(a))
+			})
+		})
+
+		rOuter.Route("/financials", func(r chi.Router) {
+			r.Group(func(r chi.Router) {
+				r.Use(jwtauth.Verifier(tokenAuth))
+				r.Use(jwtauth.Authenticator(tokenAuth))
+				r.Use(web.ValidateUserRoleJWT)
+
+				r.Get("/", web.GetEntrepreneurFinancials(a))
+				r.Delete("/{id}", web.DeleteFinReport(a))
+				r.Patch("/{id}", web.UpdateFinReport(a))
+			})
+		})
+
+		rOuter.Post("/login", web.LoginHandler(a))
+		rOuter.Post("/signup", web.RegisterHandler(a))
 	})
-
-	mux.Route("/contacts", func(r chi.Router) {
-		r.Group(func(r chi.Router) {
-			r.Use(jwtauth.Verifier(tokenAuth))
-			r.Use(jwtauth.Authenticator(tokenAuth))
-			r.Use(web.ValidateUserRoleJWT)
-
-			r.Get("/", web.ListEntrepreneurContacts(a))
-			r.Post("/", web.CreateContact(a))
-			r.Get("/{id}", web.GetContact(a))
-			r.Patch("/{id}", web.UpdateContact(a))
-			r.Delete("/{id}", web.DeleteContact(a))
-		})
-	})
-
-	mux.Route("/activity_fields", func(r chi.Router) {
-		r.Get("/{id}", web.GetActivityField(a))
-		r.Get("/", web.ListActivityFields(a))
-
-		r.Group(func(r chi.Router) {
-			r.Use(jwtauth.Verifier(tokenAuth))
-			r.Use(jwtauth.Authenticator(tokenAuth))
-			r.Use(web.ValidateAdminRoleJWT)
-
-			r.Post("/", web.CreateActivityField(a))
-			r.Patch("/{id}", web.UpdateActivityField(a))
-			r.Delete("/{id}", web.DeleteActivityField(a))
-		})
-	})
-
-	mux.Route("/companies", func(r chi.Router) {
-		r.Get("/{id}", web.GetCompany(a))
-		r.Get("/", web.ListEntrepreneurCompanies(a))
-
-		r.Group(func(r chi.Router) {
-			r.Use(jwtauth.Verifier(tokenAuth))
-			r.Use(jwtauth.Authenticator(tokenAuth))
-			r.Use(web.ValidateUserRoleJWT)
-
-			r.Post("/", web.CreateCompany(a))
-			r.Patch("/{id}", web.UpdateCompany(a))
-			r.Delete("/{id}", web.DeleteCompany(a))
-		})
-
-		r.Route("/{id}/financials", func(r chi.Router) {
-			r.Use(jwtauth.Verifier(tokenAuth))
-			r.Use(jwtauth.Authenticator(tokenAuth))
-			r.Use(web.ValidateUserRoleJWT)
-
-			r.Post("/", web.CreateReport(a))
-			r.Get("/", web.ListCompanyReports(a))
-		})
-	})
-
-	mux.Route("/financials", func(r chi.Router) {
-		r.Group(func(r chi.Router) {
-			r.Use(jwtauth.Verifier(tokenAuth))
-			r.Use(jwtauth.Authenticator(tokenAuth))
-			r.Use(web.ValidateUserRoleJWT)
-
-			r.Get("/", web.GetEntrepreneurFinancials(a))
-			r.Delete("/{id}", web.DeleteFinReport(a))
-			r.Patch("/{id}", web.UpdateFinReport(a))
-		})
-	})
-
-	mux.Post("/login", web.LoginHandler(a))
-	mux.Post("/signup", web.RegisterHandler(a))
 
 	go func() {
 		metricsAddress := fmt.Sprintf("%s:%s", cfg.Server.MetricsHost, cfg.Server.MetricsPort)
