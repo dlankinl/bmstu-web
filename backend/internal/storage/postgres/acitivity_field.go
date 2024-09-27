@@ -3,8 +3,10 @@ package postgres
 import (
 	"context"
 	"fmt"
+	"math"
 	"ppo/domain"
 	"ppo/internal/config"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -55,21 +57,34 @@ func (r *ActivityFieldRepository) DeleteById(ctx context.Context, id uuid.UUID) 
 }
 
 func (r *ActivityFieldRepository) Update(ctx context.Context, data *domain.ActivityField) (err error) {
-	query := `
-			update ppo.activity_fields
-			set 
-			    name = $1,
-			    description = $2, 
-			    cost = $3
-			where id = $4`
+	queryArgs := make([]any, 0)
+	queryElems := make([]string, 0)
+	query := "update ppo.activity_fields set "
+
+	i := 1
+	if data.Name != "" {
+		queryElems = append(queryElems, fmt.Sprintf("name = $%d", i))
+		queryArgs = append(queryArgs, data.Name)
+		i++
+	}
+	if data.Description != "" {
+		queryElems = append(queryElems, fmt.Sprintf("description = $%d", i))
+		queryArgs = append(queryArgs, data.Description)
+		i++
+	}
+	if math.Abs(float64(data.Cost)) > 0 {
+		queryElems = append(queryElems, fmt.Sprintf("cost = $%d", i))
+		queryArgs = append(queryArgs, data.Cost)
+		i++
+	}
+	query += strings.Join(queryElems, ", ")
+	query += fmt.Sprintf(" where id = $%d", i)
+	queryArgs = append(queryArgs, data.ID)
 
 	_, err = r.db.Exec(
 		ctx,
 		query,
-		data.Name,
-		data.Description,
-		data.Cost,
-		data.ID,
+		queryArgs...,
 	)
 	if err != nil {
 		return fmt.Errorf("обновление информации о сфере деятельности: %w", err)

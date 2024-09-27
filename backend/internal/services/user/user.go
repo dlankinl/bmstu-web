@@ -107,32 +107,23 @@ func (s *Service) GetAll(ctx context.Context, page int) (users []*domain.User, n
 func (s *Service) Update(ctx context.Context, user *domain.User) (err error) {
 	prompt := "UserUpdate"
 
-	if user.Gender != "m" && user.Gender != "w" {
+	_, err = s.userRepo.GetById(ctx, user.ID)
+	if err != nil {
+		s.logger.Infof("%s: %v", prompt, err)
+		return fmt.Errorf("%s: %w", prompt, err)
+	}
+
+	if user.Gender != "" && user.Gender != "m" && user.Gender != "w" {
 		s.logger.Infof("%s: неизвестный пол", prompt)
 		return fmt.Errorf("неизвестный пол")
 	}
 
-	if user.City == "" {
-		s.logger.Infof("%s: должно быть указано название города", prompt)
-		return fmt.Errorf("должно быть указано название города")
-	}
-
-	if user.Birthday.IsZero() {
-		s.logger.Infof("%s: должна быть указана дата рождения", prompt)
-		return fmt.Errorf("должна быть указана дата рождения")
-	}
-
-	if user.FullName == "" {
-		s.logger.Infof("%s: должны быть указаны ФИО", prompt)
-		return fmt.Errorf("должны быть указаны ФИО")
-	}
-
-	if len(strings.Split(user.FullName, " ")) != 3 {
+	if user.FullName != "" && len(strings.Split(user.FullName, " ")) != 3 {
 		s.logger.Infof("%s: некорректное количество слов (должны быть фамилия, имя и отчество)", prompt)
 		return fmt.Errorf("некорректное количество слов (должны быть фамилия, имя и отчество)")
 	}
 
-	if user.Role != "admin" && user.Role != "user" {
+	if user.Role != "" && user.Role != "admin" && user.Role != "user" {
 		s.logger.Infof("%s: невалидная роль", prompt)
 		return fmt.Errorf("невалидная роль")
 	}
@@ -148,6 +139,12 @@ func (s *Service) Update(ctx context.Context, user *domain.User) (err error) {
 
 func (s *Service) DeleteById(ctx context.Context, id uuid.UUID) (err error) {
 	prompt := "UserDeleteById"
+
+	_, err = s.userRepo.GetById(ctx, id)
+	if err != nil {
+		s.logger.Infof("%s: %v", prompt, err)
+		return fmt.Errorf("%s: %w", prompt, err)
+	}
 
 	err = s.userRepo.DeleteById(ctx, id)
 	if err != nil {

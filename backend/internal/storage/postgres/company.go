@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"ppo/domain"
 	"ppo/internal/config"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -130,23 +131,39 @@ func (r *CompanyRepository) GetByOwnerId(ctx context.Context, id uuid.UUID, page
 }
 
 func (r *CompanyRepository) Update(ctx context.Context, company *domain.Company) (err error) {
-	query := `
-			update ppo.companies
-			set 
-			    owner_id = $1,
-			    activity_field_id = $2,
-			    name = $3, 
-			    city = $4
-			where id = $5`
+	queryArgs := make([]any, 0)
+	queryElems := make([]string, 0)
+	query := "update ppo.companies set "
+
+	i := 1
+	if company.OwnerID.ID() != 0 {
+		queryElems = append(queryElems, fmt.Sprintf("owner_id = $%d", i))
+		queryArgs = append(queryArgs, company.OwnerID)
+		i++
+	}
+	if company.ActivityFieldId.ID() != 0 {
+		queryElems = append(queryElems, fmt.Sprintf("activity_field_id = $%d", i))
+		queryArgs = append(queryArgs, company.ActivityFieldId)
+		i++
+	}
+	if company.Name != "" {
+		queryElems = append(queryElems, fmt.Sprintf("name = $%d", i))
+		queryArgs = append(queryArgs, company.Name)
+		i++
+	}
+	if company.City != "" {
+		queryElems = append(queryElems, fmt.Sprintf("city = $%d", i))
+		queryArgs = append(queryArgs, company.City)
+		i++
+	}
+	query += strings.Join(queryElems, ", ")
+	query += fmt.Sprintf(" where id = $%d", i)
+	queryArgs = append(queryArgs, company.ID)
 
 	_, err = r.db.Exec(
 		ctx,
 		query,
-		company.OwnerID,
-		company.ActivityFieldId,
-		company.Name,
-		company.City,
-		company.ID,
+		queryArgs...,
 	)
 	if err != nil {
 		return fmt.Errorf("обновление информации о компании: %w", err)

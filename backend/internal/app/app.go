@@ -41,7 +41,7 @@ func NewApp(db *pgxpool.Pool, cfg *config.Config, log logger.ILogger) *App {
 
 	authSvc := auth.NewService(authRepo, crypto, cfg.Server.JwtKey, log)
 	userSvc := user.NewService(userRepo, compRepo, actFieldRepo, log)
-	finSvc := fin_report.NewService(finRepo, log)
+	finSvc := fin_report.NewService(finRepo, compRepo, log)
 	conSvc := contact.NewService(conRepo, log)
 	actFieldSvc := activity_field.NewService(actFieldRepo, compRepo, log)
 	compSvc := company.NewService(compRepo, actFieldRepo, log)

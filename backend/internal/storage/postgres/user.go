@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"ppo/domain"
 	"ppo/internal/config"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -153,27 +154,49 @@ func (r *UserRepository) GetAll(ctx context.Context, page int) (users []*domain.
 }
 
 func (r *UserRepository) Update(ctx context.Context, user *domain.User) (err error) {
-	query := `
-			update ppo.users
-			set 
-			    full_name = $1, 
-			    birthday = $2, 
-			    gender = $3, 
-			    city = $4,
-			    role = $5,
-			    username = $6
-			where id = $7`
+	queryArgs := make([]any, 0)
+	queryElems := make([]string, 0)
+	query := "update ppo.users set "
+
+	i := 1
+	if user.FullName != "" {
+		queryElems = append(queryElems, fmt.Sprintf("full_name = $%d", i))
+		queryArgs = append(queryArgs, user.FullName)
+		i++
+	}
+	if !user.Birthday.IsZero() {
+		queryElems = append(queryElems, fmt.Sprintf("birthday = $%d", i))
+		queryArgs = append(queryArgs, user.Birthday)
+		i++
+	}
+	if user.Gender != "" {
+		queryElems = append(queryElems, fmt.Sprintf("gender = $%d", i))
+		queryArgs = append(queryArgs, user.Gender)
+		i++
+	}
+	if user.City != "" {
+		queryElems = append(queryElems, fmt.Sprintf("city = $%d", i))
+		queryArgs = append(queryArgs, user.City)
+		i++
+	}
+	if user.Role != "" {
+		queryElems = append(queryElems, fmt.Sprintf("role = $%d", i))
+		queryArgs = append(queryArgs, user.Role)
+		i++
+	}
+	if user.Username != "" {
+		queryElems = append(queryElems, fmt.Sprintf("username = $%d", i))
+		queryArgs = append(queryArgs, user.Username)
+		i++
+	}
+	query += strings.Join(queryElems, ", ")
+	query += fmt.Sprintf(" where id = $%d", i)
+	queryArgs = append(queryArgs, user.ID)
 
 	_, err = r.db.Exec(
 		ctx,
 		query,
-		user.FullName,
-		user.Birthday,
-		user.Gender,
-		user.City,
-		user.Role,
-		user.Username,
-		user.ID,
+		queryArgs...,
 	)
 	if err != nil {
 		return fmt.Errorf("обновление информации о пользователе: %w", err)

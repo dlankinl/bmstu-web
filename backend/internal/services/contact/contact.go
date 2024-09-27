@@ -78,8 +78,19 @@ func (s *Service) GetByOwnerId(ctx context.Context, id uuid.UUID) (contacts []*d
 	return contacts, nil
 }
 
-func (s *Service) Update(ctx context.Context, contact *domain.Contact) (err error) {
+func (s *Service) Update(ctx context.Context, contact *domain.Contact, ownerId uuid.UUID) (err error) {
 	prompt := "ContactUpdate"
+
+	conDb, err := s.contactRepo.GetById(ctx, contact.ID)
+	if err != nil {
+		s.logger.Infof("%s: получение средства связи по id: %v", prompt, err)
+		return fmt.Errorf("получение средства связи по id: %w", err)
+	}
+
+	if conDb.OwnerID != ownerId {
+		s.logger.Infof("%s: только владелец может обновлять информацию о своих средствах связи", prompt)
+		return fmt.Errorf("только владелец может обновлять информацию о своих средствах связи")
+	}
 
 	err = s.contactRepo.Update(ctx, contact)
 	if err != nil {
@@ -90,8 +101,19 @@ func (s *Service) Update(ctx context.Context, contact *domain.Contact) (err erro
 	return nil
 }
 
-func (s *Service) DeleteById(ctx context.Context, id uuid.UUID) (err error) {
+func (s *Service) DeleteById(ctx context.Context, id uuid.UUID, ownerId uuid.UUID) (err error) {
 	prompt := "ContactDeleteById"
+
+	contact, err := s.contactRepo.GetById(ctx, id)
+	if err != nil {
+		s.logger.Infof("%s: удаление средства связи по id: %v", prompt, err)
+		return fmt.Errorf("удаление средства связи по id: %w", err)
+	}
+
+	if ownerId != contact.OwnerID {
+		s.logger.Infof("%s: только владелец может удалить своё средство связи", prompt)
+		return fmt.Errorf("только владелец может удалить своё средство связи")
+	}
 
 	err = s.contactRepo.DeleteById(ctx, id)
 	if err != nil {

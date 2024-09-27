@@ -3,11 +3,9 @@ package web
 import (
 	"encoding/json"
 	"fmt"
-	"math"
 	"net/http"
 	"ppo/domain"
 	"ppo/internal/app"
-	"ppo/pkg/base"
 	"strconv"
 	"time"
 
@@ -44,13 +42,6 @@ func LoginHandler(app *app.App) http.HandlerFunc {
 		if err != nil {
 			app.Logger.Infof("%s: %v", prompt, err)
 			errorResponse(wrappedWriter, fmt.Errorf("%s: %w", prompt, err).Error(), http.StatusUnauthorized)
-			return
-		}
-
-		_, err = base.VerifyAuthToken(token, app.Config.Server.JwtKey)
-		if err != nil {
-			app.Logger.Infof("%s: проверка JWT-токена: %v", prompt, err)
-			errorResponse(wrappedWriter, fmt.Errorf("%s: проверка JWT-токена: %w", prompt, err).Error(), http.StatusInternalServerError)
 			return
 		}
 
@@ -169,13 +160,6 @@ func UpdateEntrepreneur(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		userDb, err := app.UserSvc.GetById(r.Context(), idUuid)
-		if err != nil {
-			app.Logger.Infof("%s: %v", prompt, err)
-			errorResponse(wrappedWriter, fmt.Errorf("%s: %w", prompt, err).Error(), http.StatusInternalServerError)
-			return
-		}
-
 		var req User
 
 		err = json.NewDecoder(r.Body).Decode(&req)
@@ -185,26 +169,10 @@ func UpdateEntrepreneur(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		if req.City != "" {
-			userDb.City = req.City
-		}
-		if req.Role != "" {
-			userDb.Role = req.Role
-		}
-		if req.Gender != "" {
-			userDb.Gender = req.Gender
-		}
-		if !req.Birthday.IsZero() {
-			userDb.Birthday = req.Birthday
-		}
-		if req.FullName != "" {
-			userDb.FullName = req.FullName
-		}
-		if req.Username != "" {
-			userDb.Username = req.Username
-		}
+		req.ID = idUuid
+		userModel := toUserModel(&req)
 
-		err = app.UserSvc.Update(r.Context(), userDb)
+		err = app.UserSvc.Update(r.Context(), &userModel)
 		if err != nil {
 			app.Logger.Infof("%s: %v", prompt, err)
 			errorResponse(wrappedWriter, fmt.Errorf("%s: %w", prompt, err).Error(), http.StatusBadRequest)
@@ -237,13 +205,6 @@ func DeleteEntrepreneur(app *app.App) http.HandlerFunc {
 		if err != nil {
 			app.Logger.Infof("%s: преобразование id к uuid: %v", prompt, err)
 			errorResponse(wrappedWriter, fmt.Errorf("%s: преобразование id к uuid: %w", prompt, err).Error(), http.StatusBadRequest)
-			return
-		}
-
-		_, err = app.UserSvc.GetById(r.Context(), idUuid)
-		if err != nil {
-			app.Logger.Infof("%s: %v", prompt, err)
-			errorResponse(wrappedWriter, fmt.Errorf("%s: %w", prompt, err).Error(), http.StatusBadRequest)
 			return
 		}
 
@@ -380,20 +341,7 @@ func DeleteContact(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		contact, err := app.ConSvc.GetById(r.Context(), idUuid)
-		if err != nil {
-			app.Logger.Infof("%s: удаление средства связи по id: %v", prompt, err)
-			errorResponse(wrappedWriter, fmt.Errorf("удаление средства связи по id: %w", err).Error(), http.StatusInternalServerError)
-			return
-		}
-
-		if ownerIdUuid != contact.OwnerID {
-			app.Logger.Infof("%s: только владелец может удалить своё средство связи", prompt)
-			errorResponse(wrappedWriter, fmt.Errorf("только владелец может удалить своё средство связи").Error(), http.StatusInternalServerError)
-			return
-		}
-
-		err = app.ConSvc.DeleteById(r.Context(), idUuid)
+		err = app.ConSvc.DeleteById(r.Context(), idUuid, ownerIdUuid)
 		if err != nil {
 			app.Logger.Infof("%s: удаление средства связи по id: %v", prompt, err)
 			errorResponse(wrappedWriter, fmt.Errorf("удаление средства связи по id: %w", err).Error(), http.StatusInternalServerError)
@@ -443,19 +391,6 @@ func UpdateContact(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		conDb, err := app.ConSvc.GetById(r.Context(), idUuid)
-		if err != nil {
-			app.Logger.Infof("%s: получение средства связи по id: %v", prompt, err)
-			errorResponse(wrappedWriter, fmt.Errorf("получение средства связи по id: %w", err).Error(), http.StatusInternalServerError)
-			return
-		}
-
-		if ownerIdUuid != conDb.OwnerID {
-			app.Logger.Infof("%s: только владелец может обновлять информацию о своих средствах связи", prompt)
-			errorResponse(wrappedWriter, fmt.Errorf("только владелец может обновлять информацию о своих средствах связи").Error(), http.StatusInternalServerError)
-			return
-		}
-
 		var req Contact
 
 		err = json.NewDecoder(r.Body).Decode(&req)
@@ -464,15 +399,10 @@ func UpdateContact(app *app.App) http.HandlerFunc {
 			errorResponse(wrappedWriter, err.Error(), http.StatusBadRequest)
 			return
 		}
+		req.ID = idUuid
+		model := toContactModel(&req)
 
-		if req.Name != "" {
-			conDb.Name = req.Name
-		}
-		if req.Value != "" {
-			conDb.Value = req.Value
-		}
-
-		err = app.ConSvc.Update(r.Context(), conDb)
+		err = app.ConSvc.Update(r.Context(), &model, ownerIdUuid)
 		if err != nil {
 			app.Logger.Infof("%s: обновление информации о средстве связи: %v", prompt, err)
 			errorResponse(wrappedWriter, fmt.Errorf("обновление информации о средстве связи: %w", err).Error(), http.StatusInternalServerError)
@@ -617,13 +547,6 @@ func DeleteActivityField(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		_, err = app.ActFieldSvc.GetById(r.Context(), idUuid)
-		if err != nil {
-			app.Logger.Infof("%s: получение сферы деятельности по id: %v", prompt, err)
-			errorResponse(wrappedWriter, fmt.Errorf("получение сферы деятельности по id: %w", err).Error(), http.StatusInternalServerError)
-			return
-		}
-
 		err = app.ActFieldSvc.DeleteById(r.Context(), idUuid)
 		if err != nil {
 			app.Logger.Infof("%s: удаление сферы деятельности по id: %v", prompt, err)
@@ -660,13 +583,6 @@ func UpdateActivityField(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		actFieldDb, err := app.ActFieldSvc.GetById(r.Context(), idUuid)
-		if err != nil {
-			app.Logger.Infof("%s: получение сферы деятельности по id: %v", prompt, err)
-			errorResponse(wrappedWriter, fmt.Errorf("получение сферы деятельности по id: %w", err).Error(), http.StatusInternalServerError)
-			return
-		}
-
 		var req ActivityField
 
 		err = json.NewDecoder(r.Body).Decode(&req)
@@ -676,17 +592,11 @@ func UpdateActivityField(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		if req.Name != "" {
-			actFieldDb.Name = req.Name
-		}
-		if req.Description != "" {
-			actFieldDb.Description = req.Description
-		}
-		if !(math.Abs(float64(req.Cost)) < eps) {
-			actFieldDb.Cost = req.Cost
-		}
+		req.ID = idUuid
 
-		err = app.ActFieldSvc.Update(r.Context(), actFieldDb)
+		model := toActFieldModel(&req)
+
+		err = app.ActFieldSvc.Update(r.Context(), &model)
 		if err != nil {
 			app.Logger.Infof("%s: обновление информации о сфере деятельности: %v", prompt, err)
 			errorResponse(wrappedWriter, fmt.Errorf("обновление информации о сфере деятельности: %w", err).Error(), http.StatusInternalServerError)
@@ -862,20 +772,7 @@ func DeleteCompany(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		company, err := app.CompSvc.GetById(r.Context(), idUuid)
-		if err != nil {
-			app.Logger.Infof("%s: удаление компании по id: %v", prompt, err)
-			errorResponse(wrappedWriter, fmt.Errorf("удаление компании по id: %w", err).Error(), http.StatusInternalServerError)
-			return
-		}
-
-		if ownerIdUuid != company.OwnerID {
-			app.Logger.Infof("%s: только владелец может удалять свои компании", prompt)
-			errorResponse(wrappedWriter, fmt.Errorf("только владелец может удалять свои компании").Error(), http.StatusInternalServerError)
-			return
-		}
-
-		err = app.CompSvc.DeleteById(r.Context(), idUuid)
+		err = app.CompSvc.DeleteById(r.Context(), idUuid, ownerIdUuid)
 		if err != nil {
 			app.Logger.Infof("%s: удаление компании по id: %v", prompt, err)
 			errorResponse(wrappedWriter, fmt.Errorf("удаление компании по id: %w", err).Error(), http.StatusInternalServerError)
@@ -925,19 +822,6 @@ func UpdateCompany(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		compDb, err := app.CompSvc.GetById(r.Context(), idUuid)
-		if err != nil {
-			app.Logger.Infof("%s: получение компании по id: %v", prompt, err)
-			errorResponse(wrappedWriter, fmt.Errorf("получение компании по id: %w", err).Error(), http.StatusInternalServerError)
-			return
-		}
-
-		if ownerIdUuid != compDb.OwnerID {
-			app.Logger.Infof("%s: только владелец может обновлять информацию о своих компаниях", prompt)
-			errorResponse(wrappedWriter, fmt.Errorf("только владелец может обновлять информацию о своих компаниях").Error(), http.StatusInternalServerError)
-			return
-		}
-
 		var req Company
 
 		err = json.NewDecoder(r.Body).Decode(&req)
@@ -946,18 +830,10 @@ func UpdateCompany(app *app.App) http.HandlerFunc {
 			errorResponse(wrappedWriter, err.Error(), http.StatusBadRequest)
 			return
 		}
+		req.ID = idUuid
+		model := toCompanyModel(&req)
 
-		if req.ActivityFieldId.ID() != 0 {
-			compDb.ActivityFieldId = req.ActivityFieldId
-		}
-		if req.Name != "" {
-			compDb.Name = req.Name
-		}
-		if req.City != "" {
-			compDb.City = req.City
-		}
-
-		err = app.CompSvc.Update(r.Context(), compDb)
+		err = app.CompSvc.Update(r.Context(), &model, ownerIdUuid)
 		if err != nil {
 			app.Logger.Infof("%s: обновление информации о компании: %v", prompt, err)
 			errorResponse(wrappedWriter, fmt.Errorf("обновление информации о компании: %w", err).Error(), http.StatusInternalServerError)
@@ -1172,27 +1048,7 @@ func DeleteFinReport(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		report, err := app.FinSvc.GetById(r.Context(), reportIdUuid)
-		if err != nil {
-			app.Logger.Infof("%s: получение финансового отчета: %v", prompt, err)
-			errorResponse(wrappedWriter, fmt.Errorf("получение финансового отчета: %w", err).Error(), http.StatusInternalServerError)
-			return
-		}
-
-		company, err := app.CompSvc.GetById(r.Context(), report.CompanyID)
-		if err != nil {
-			app.Logger.Infof("%s: получение компании: %v", prompt, err)
-			errorResponse(wrappedWriter, fmt.Errorf("получение компании: %w", err).Error(), http.StatusInternalServerError)
-			return
-		}
-
-		if company.OwnerID != userIdUuid {
-			app.Logger.Infof("%s: только владелец компании может удалять финансовые отчеты", prompt)
-			errorResponse(wrappedWriter, fmt.Errorf("только владелец компании может удалять финансовые отчеты").Error(), http.StatusInternalServerError)
-			return
-		}
-
-		err = app.FinSvc.DeleteById(r.Context(), reportIdUuid)
+		err = app.FinSvc.DeleteById(r.Context(), reportIdUuid, userIdUuid)
 		if err != nil {
 			app.Logger.Infof("%s: только владелец компании может удалять финансовые отчеты", prompt)
 			errorResponse(wrappedWriter, fmt.Errorf("удаление финансового отчета по id: %w", err).Error(), http.StatusInternalServerError)
@@ -1242,26 +1098,6 @@ func UpdateFinReport(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		reportDb, err := app.FinSvc.GetById(r.Context(), reportIdUuid)
-		if err != nil {
-			app.Logger.Infof("%s: получение финансового отчета: %v", prompt, err)
-			errorResponse(wrappedWriter, fmt.Errorf("получение финансового отчета: %w", err).Error(), http.StatusInternalServerError)
-			return
-		}
-
-		company, err := app.CompSvc.GetById(r.Context(), reportDb.CompanyID)
-		if err != nil {
-			app.Logger.Infof("%s: получение компании: %v", prompt, err)
-			errorResponse(wrappedWriter, fmt.Errorf("получение компании: %w", err).Error(), http.StatusInternalServerError)
-			return
-		}
-
-		if company.OwnerID != userIdUuid {
-			app.Logger.Infof("%s: только владелец компании может изменять финансовый отчет", prompt)
-			errorResponse(wrappedWriter, fmt.Errorf("только владелец компании может изменять финансовый отчет").Error(), http.StatusInternalServerError)
-			return
-		}
-
 		var req FinancialReport
 
 		err = json.NewDecoder(r.Body).Decode(&req)
@@ -1270,21 +1106,10 @@ func UpdateFinReport(app *app.App) http.HandlerFunc {
 			errorResponse(wrappedWriter, err.Error(), http.StatusBadRequest)
 			return
 		}
+		req.ID = reportIdUuid
+		model := toFinReportModel(&req)
 
-		if req.Year != 0 {
-			reportDb.Year = req.Year
-		}
-		if req.Quarter != 0 {
-			reportDb.Quarter = req.Quarter
-		}
-		if !(math.Abs(float64(req.Revenue)) < eps) {
-			reportDb.Revenue = req.Revenue
-		}
-		if !(math.Abs(float64(req.Costs)) < eps) {
-			reportDb.Costs = req.Costs
-		}
-
-		err = app.FinSvc.Update(r.Context(), reportDb)
+		err = app.FinSvc.Update(r.Context(), &model, userIdUuid)
 		if err != nil {
 			app.Logger.Infof("%s: обновление информации о финансовом отчете: %v", prompt, err)
 			errorResponse(wrappedWriter, fmt.Errorf("обновление информации о финансовом отчете: %w", err).Error(), http.StatusInternalServerError)
