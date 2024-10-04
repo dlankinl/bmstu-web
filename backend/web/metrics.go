@@ -14,6 +14,6 @@ var requestMetrics = promauto.NewSummaryVec(prometheus.SummaryOpts{
 	Objectives: map[float64]float64{0.5: 0.05, 0.9: 0.01, 0.99: 0.001},
 }, []string{"handlerName", "status", "method"})
 
-func observeRequest(d time.Duration, status int, method, handlerName string) {
+func ObserveRequest(d time.Duration, status int, method, handlerName string) {
 	requestMetrics.WithLabelValues(handlerName, strconv.Itoa(status), method).Observe(d.Seconds())
 }

@@ -57,7 +57,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -66,7 +66,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -100,13 +100,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -118,7 +118,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -150,13 +150,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -168,7 +168,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -209,13 +209,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -227,7 +227,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -244,7 +244,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "activity_fields"
+                    "activityFields"
                 ],
                 "summary": "Получение информации о сфере деятельности",
                 "operationId": "getActField",
@@ -267,7 +267,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -276,7 +276,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -316,7 +316,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -325,7 +325,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -359,13 +359,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -374,7 +374,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -406,13 +406,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -421,7 +421,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -462,13 +462,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -477,7 +477,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -545,7 +545,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -554,7 +554,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -595,13 +595,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -610,7 +610,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -650,7 +650,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -659,7 +659,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -693,13 +693,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -708,7 +708,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -740,13 +740,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -755,7 +755,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -796,13 +796,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -811,7 +811,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -853,13 +853,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -891,13 +891,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -909,7 +909,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -950,13 +950,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -968,7 +968,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -1008,7 +1008,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -1020,7 +1020,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -1067,7 +1067,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -1076,7 +1076,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -1116,7 +1116,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -1125,7 +1125,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -1165,7 +1165,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -1174,7 +1174,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -1206,13 +1206,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -1221,7 +1221,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -1262,13 +1262,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -1277,7 +1277,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -1294,17 +1294,28 @@ const docTemplate = `{
                 ],
                 "summary": "Аутентификация",
                 "operationId": "login",
+                "parameters": [
+                    {
+                        "description": "Login data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.LoginReq"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -1321,17 +1332,28 @@ const docTemplate = `{
                 ],
                 "summary": "Регистрация",
                 "operationId": "register",
+                "parameters": [
+                    {
+                        "description": "Signup data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.RegisterReq"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -1490,7 +1512,7 @@ const docTemplate = `{
                 }
             }
         },
-        "web.ErrorResponse": {
+        "web.ErrorResponseStruct": {
             "type": "object",
             "properties": {
                 "error": {
@@ -1550,6 +1572,17 @@ const docTemplate = `{
                 }
             }
         },
+        "web.LoginReq": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "web.Period": {
             "type": "object",
             "properties": {
@@ -1575,7 +1608,18 @@ const docTemplate = `{
                 }
             }
         },
-        "web.SuccessResponse": {
+        "web.RegisterReq": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "web.SuccessResponseStruct": {
             "type": "object",
             "properties": {
                 "data": {},
@@ -1624,7 +1668,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:8081",
-	BasePath:         "/api/v1",
+	BasePath:         "/api/v2",
 	Schemes:          []string{},
 	Title:            "Cервис поиска партнеров-предпринимателей",
 	Description:      "Сервис призван помочь с поиском партнеров по бизнесу.",

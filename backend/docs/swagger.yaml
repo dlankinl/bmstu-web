@@ -1,4 +1,4 @@
-basePath: /api/v1
+basePath: /api/v2
 definitions:
   web.ActFieldResponse:
     properties:
@@ -97,7 +97,7 @@ definitions:
       numPages:
         type: integer
     type: object
-  web.ErrorResponse:
+  web.ErrorResponseStruct:
     properties:
       error:
         type: string
@@ -136,6 +136,13 @@ definitions:
       year:
         type: integer
     type: object
+  web.LoginReq:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
   web.Period:
     properties:
       endQuarter:
@@ -152,7 +159,14 @@ definitions:
       rating:
         type: number
     type: object
-  web.SuccessResponse:
+  web.RegisterReq:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  web.SuccessResponseStruct:
     properties:
       data: {}
       status:
@@ -203,11 +217,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.SuccessResponse'
+            $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "403":
@@ -215,7 +229,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Удаление информации о сфере деятельности
@@ -239,13 +253,13 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Получение списка сфер деятельности
@@ -271,11 +285,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.SuccessResponse'
+            $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "403":
@@ -283,7 +297,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Обновление информации о сфере деятельности
@@ -304,11 +318,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.SuccessResponse'
+            $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "403":
@@ -316,7 +330,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Добавление сферы деятельности
@@ -341,18 +355,18 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Получение информации о сфере деятельности
       tags:
-      - activity_fields
+      - activityFields
   /companies:
     delete:
       operationId: deleteCompany
@@ -368,17 +382,17 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.SuccessResponse'
+            $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Удаление информации о компании
@@ -402,13 +416,13 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Получение информации о компании
@@ -434,17 +448,17 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.SuccessResponse'
+            $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Обновление информации о компании
@@ -465,17 +479,17 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.SuccessResponse'
+            $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Добавление компании
@@ -520,13 +534,13 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Получение финансовых отчетов компании
@@ -552,17 +566,17 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.SuccessResponse'
+            $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Добавление финансового отчета
@@ -583,17 +597,17 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.SuccessResponse'
+            $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Удаление средства связи
@@ -617,13 +631,13 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Получение информации о средстве связи
@@ -649,17 +663,17 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.SuccessResponse'
+            $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Обновление средства связи
@@ -680,17 +694,17 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.SuccessResponse'
+            $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Добавление средства связи
@@ -711,11 +725,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.SuccessResponse'
+            $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "403":
@@ -723,7 +737,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Удаление информации о предпринимателе
@@ -753,11 +767,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       summary: Список предпринимателей
       tags:
       - entrepreneurs
@@ -781,11 +795,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.SuccessResponse'
+            $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "403":
@@ -793,7 +807,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Обновление информации о предпринимателе
@@ -818,7 +832,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "403":
@@ -826,7 +840,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Получение информации о предпринимателе
@@ -856,13 +870,13 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Получение информации о компаниях предпринимателя
@@ -887,13 +901,13 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Получение финансовых отчетов компании
@@ -914,17 +928,17 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.SuccessResponse'
+            $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Удаление информации об отчете
@@ -948,13 +962,13 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Получение информации об отчете
@@ -980,17 +994,17 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.SuccessResponse'
+            $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
       summary: Обновление отчета
@@ -1000,17 +1014,24 @@ paths:
     post:
       description: Метод для получения bearer-токена для auth
       operationId: login
+      parameters:
+      - description: Login data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/web.LoginReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.SuccessResponse'
+            $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       summary: Аутентификация
       tags:
       - users
@@ -1018,17 +1039,24 @@ paths:
     post:
       description: Метод для регистрации
       operationId: register
+      parameters:
+      - description: Signup data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/web.RegisterReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.SuccessResponse'
+            $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/web.ErrorResponse'
+            $ref: '#/definitions/web.ErrorResponseStruct'
       summary: Регистрация
       tags:
       - users

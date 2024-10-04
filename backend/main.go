@@ -18,6 +18,7 @@ import (
 	"ppo/internal/config"
 	loggerPackage "ppo/pkg/logger"
 	"ppo/web"
+	v1 "ppo/web/v1"
 )
 
 var tokenAuth *jwtauth.JWTAuth
@@ -51,7 +52,7 @@ func newConn(ctx context.Context, cfg *config.Database) (pool *pgxpool.Pool, err
 // @license.url https://opensource.org/licenses/MIT
 
 // @host localhost:8081
-// @BasePath /api/v1
+// @BasePath /api/v2
 // @query.collection.format multi
 
 // @securityDefinitions.apikey	BearerAuth
@@ -102,97 +103,183 @@ func main() {
 	}))
 
 	mux.Use(middleware.Logger)
-	//mux.Get("/swagger/*any", httpSwagger.Handler(
-	//	httpSwagger.URL("http://localhost:8081/swagger/docs.json"),
-	//))
-	//mux.Mount("/swagger", httpSwagger.WrapHandler)
 
-	mux.Route("/api/v1", func(v1 chi.Router) {
-		v1.Route("/entrepreneurs", func(r chi.Router) {
-			r.Get("/{id}", web.GetEntrepreneur(a))
-			r.Get("/", web.ListEntrepreneurs(a))
-			r.Get("/{id}/rating", web.CalculateRating(a))
-			r.Get("/companies", web.ListEntrepreneurCompanies(a))
+	mux.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:8081/swagger/doc.json"), //The url pointing to API definition
+	))
 
-			r.Group(func(r chi.Router) {
-				r.Use(jwtauth.Verifier(tokenAuth))
-				r.Use(jwtauth.Authenticator(tokenAuth))
-				r.Use(web.ValidateAdminRoleJWT)
+	mux.Route("/api", func(r chi.Router) {
+		r.Route("/v1", func(r chi.Router) {
+			r.Route("/entrepreneurs", func(r chi.Router) {
+				r.Get("/{id}", v1.GetEntrepreneur(a))
+				r.Get("/", v1.ListEntrepreneurs(a))
+				r.Get("/{id}/rating", v1.CalculateRating(a))
+				r.Get("/companies", v1.ListEntrepreneurCompanies(a))
 
-				r.Patch("/{id}", web.UpdateEntrepreneur(a))
-				r.Delete("/{id}", web.DeleteEntrepreneur(a))
+				r.Group(func(r chi.Router) {
+					r.Use(jwtauth.Verifier(tokenAuth))
+					r.Use(jwtauth.Authenticator(tokenAuth))
+					r.Use(web.ValidateAdminRoleJWT)
+
+					r.Patch("/{id}", v1.UpdateEntrepreneur(a))
+					r.Delete("/{id}", v1.DeleteEntrepreneur(a))
+				})
 			})
+
+			r.Route("/contacts", func(r chi.Router) {
+				r.Group(func(r chi.Router) {
+					r.Use(jwtauth.Verifier(tokenAuth))
+					r.Use(jwtauth.Authenticator(tokenAuth))
+					r.Use(web.ValidateUserRoleJWT)
+
+					r.Get("/", v1.ListEntrepreneurContacts(a))
+					r.Post("/", v1.CreateContact(a))
+					r.Get("/{id}", v1.GetContact(a))
+					r.Patch("/{id}", v1.UpdateContact(a))
+					r.Delete("/{id}", v1.DeleteContact(a))
+				})
+			})
+
+			r.Route("/activity_fields", func(r chi.Router) {
+				r.Get("/{id}", v1.GetActivityField(a))
+				r.Get("/", v1.ListActivityFields(a))
+
+				r.Group(func(r chi.Router) {
+					r.Use(jwtauth.Verifier(tokenAuth))
+					r.Use(jwtauth.Authenticator(tokenAuth))
+					r.Use(web.ValidateAdminRoleJWT)
+
+					r.Post("/", v1.CreateActivityField(a))
+					r.Patch("/{id}", v1.UpdateActivityField(a))
+					r.Delete("/{id}", v1.DeleteActivityField(a))
+				})
+			})
+
+			r.Route("/companies", func(r chi.Router) {
+				r.Get("/{id}", v1.GetCompany(a))
+
+				r.Group(func(r chi.Router) {
+					r.Use(jwtauth.Verifier(tokenAuth))
+					r.Use(jwtauth.Authenticator(tokenAuth))
+					r.Use(web.ValidateUserRoleJWT)
+
+					r.Post("/", v1.CreateCompany(a))
+					r.Patch("/{id}", v1.UpdateCompany(a))
+					r.Delete("/{id}", v1.DeleteCompany(a))
+				})
+
+				r.Route("/{id}/financials", func(r chi.Router) {
+					r.Use(jwtauth.Verifier(tokenAuth))
+					r.Use(jwtauth.Authenticator(tokenAuth))
+					r.Use(web.ValidateUserRoleJWT)
+
+					r.Post("/", v1.CreateReport(a))
+					r.Get("/", v1.ListCompanyReports(a))
+				})
+			})
+
+			r.Route("/financials", func(r chi.Router) {
+				r.Group(func(r chi.Router) {
+					r.Use(jwtauth.Verifier(tokenAuth))
+					r.Use(jwtauth.Authenticator(tokenAuth))
+					r.Use(web.ValidateUserRoleJWT)
+
+					r.Get("/", v1.GetEntrepreneurFinancials(a))
+					r.Delete("/{id}", v1.DeleteFinReport(a))
+					r.Patch("/{id}", v1.UpdateFinReport(a))
+				})
+			})
+
+			r.Post("/login", v1.LoginHandler(a))
+			r.Post("/signup", v1.RegisterHandler(a))
 		})
 
-		v1.Route("/contacts", func(r chi.Router) {
-			r.Group(func(r chi.Router) {
-				r.Use(jwtauth.Verifier(tokenAuth))
-				r.Use(jwtauth.Authenticator(tokenAuth))
-				r.Use(web.ValidateUserRoleJWT)
+		r.Route("/v2", func(r chi.Router) {
+			r.Route("/entrepreneurs", func(r chi.Router) {
+				r.Get("/{id}", v1.GetEntrepreneur(a))
+				r.Get("/", v1.ListEntrepreneurs(a))
+				r.Get("/{id}/rating", v1.CalculateRating(a))
+				r.Get("/companies", v1.ListEntrepreneurCompanies(a))
 
-				r.Get("/", web.ListEntrepreneurContacts(a))
-				r.Post("/", web.CreateContact(a))
-				r.Get("/{id}", web.GetContact(a))
-				r.Patch("/{id}", web.UpdateContact(a))
-				r.Delete("/{id}", web.DeleteContact(a))
+				r.Group(func(r chi.Router) {
+					r.Use(jwtauth.Verifier(tokenAuth))
+					r.Use(jwtauth.Authenticator(tokenAuth))
+					r.Use(web.ValidateAdminRoleJWT)
+
+					r.Patch("/{id}", v1.UpdateEntrepreneur(a))
+					r.Delete("/{id}", v1.DeleteEntrepreneur(a))
+				})
 			})
+
+			r.Route("/contacts", func(r chi.Router) {
+				r.Group(func(r chi.Router) {
+					r.Use(jwtauth.Verifier(tokenAuth))
+					r.Use(jwtauth.Authenticator(tokenAuth))
+					r.Use(web.ValidateUserRoleJWT)
+
+					r.Get("/", v1.ListEntrepreneurContacts(a))
+					r.Post("/", v1.CreateContact(a))
+					r.Get("/{id}", v1.GetContact(a))
+					r.Patch("/{id}", v1.UpdateContact(a))
+					r.Delete("/{id}", v1.DeleteContact(a))
+				})
+			})
+
+			r.Route("/activity_fields", func(r chi.Router) {
+				r.Get("/{id}", v1.GetActivityField(a))
+				r.Get("/", v1.ListActivityFields(a))
+
+				r.Group(func(r chi.Router) {
+					r.Use(jwtauth.Verifier(tokenAuth))
+					r.Use(jwtauth.Authenticator(tokenAuth))
+					r.Use(web.ValidateAdminRoleJWT)
+
+					r.Post("/", v1.CreateActivityField(a))
+					r.Patch("/{id}", v1.UpdateActivityField(a))
+					r.Delete("/{id}", v1.DeleteActivityField(a))
+				})
+			})
+
+			r.Route("/companies", func(r chi.Router) {
+				r.Get("/{id}", v1.GetCompany(a))
+
+				r.Group(func(r chi.Router) {
+					r.Use(jwtauth.Verifier(tokenAuth))
+					r.Use(jwtauth.Authenticator(tokenAuth))
+					r.Use(web.ValidateUserRoleJWT)
+
+					r.Post("/", v1.CreateCompany(a))
+					r.Patch("/{id}", v1.UpdateCompany(a))
+					r.Delete("/{id}", v1.DeleteCompany(a))
+				})
+
+				r.Route("/{id}/financials", func(r chi.Router) {
+					r.Use(jwtauth.Verifier(tokenAuth))
+					r.Use(jwtauth.Authenticator(tokenAuth))
+					r.Use(web.ValidateUserRoleJWT)
+
+					r.Post("/", v1.CreateReport(a))
+					r.Get("/", v1.ListCompanyReports(a))
+				})
+			})
+
+			r.Route("/financials", func(r chi.Router) {
+				r.Group(func(r chi.Router) {
+					r.Use(jwtauth.Verifier(tokenAuth))
+					r.Use(jwtauth.Authenticator(tokenAuth))
+					r.Use(web.ValidateUserRoleJWT)
+
+					r.Get("/", v1.GetEntrepreneurFinancials(a))
+					r.Delete("/{id}", v1.DeleteFinReport(a))
+					r.Patch("/{id}", v1.UpdateFinReport(a))
+				})
+			})
+
+			r.Post("/login", v1.LoginHandler(a))
+			r.Post("/signup", v1.RegisterHandler(a))
 		})
-
-		v1.Route("/activity_fields", func(r chi.Router) {
-			r.Get("/{id}", web.GetActivityField(a))
-			r.Get("/", web.ListActivityFields(a))
-
-			r.Group(func(r chi.Router) {
-				r.Use(jwtauth.Verifier(tokenAuth))
-				r.Use(jwtauth.Authenticator(tokenAuth))
-				r.Use(web.ValidateAdminRoleJWT)
-
-				r.Post("/", web.CreateActivityField(a))
-				r.Patch("/{id}", web.UpdateActivityField(a))
-				r.Delete("/{id}", web.DeleteActivityField(a))
-			})
-		})
-
-		v1.Route("/companies", func(r chi.Router) {
-			r.Get("/{id}", web.GetCompany(a))
-
-			r.Group(func(r chi.Router) {
-				r.Use(jwtauth.Verifier(tokenAuth))
-				r.Use(jwtauth.Authenticator(tokenAuth))
-				r.Use(web.ValidateUserRoleJWT)
-
-				r.Post("/", web.CreateCompany(a))
-				r.Patch("/{id}", web.UpdateCompany(a))
-				r.Delete("/{id}", web.DeleteCompany(a))
-			})
-
-			r.Route("/{id}/financials", func(r chi.Router) {
-				r.Use(jwtauth.Verifier(tokenAuth))
-				r.Use(jwtauth.Authenticator(tokenAuth))
-				r.Use(web.ValidateUserRoleJWT)
-
-				r.Post("/", web.CreateReport(a))
-				r.Get("/", web.ListCompanyReports(a))
-			})
-		})
-
-		v1.Route("/financials", func(r chi.Router) {
-			r.Group(func(r chi.Router) {
-				r.Use(jwtauth.Verifier(tokenAuth))
-				r.Use(jwtauth.Authenticator(tokenAuth))
-				r.Use(web.ValidateUserRoleJWT)
-
-				r.Get("/", web.GetEntrepreneurFinancials(a))
-				r.Delete("/{id}", web.DeleteFinReport(a))
-				r.Patch("/{id}", web.UpdateFinReport(a))
-			})
-		})
-
-		v1.Post("/login", web.LoginHandler(a))
-		v1.Post("/signup", web.RegisterHandler(a))
 	})
 
-	mux.Mount("/swagger", httpSwagger.WrapHandler)
 	go func() {
 		metricsAddress := fmt.Sprintf("%s:%s", cfg.Server.MetricsHost, cfg.Server.MetricsPort)
 

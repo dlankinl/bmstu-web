@@ -19,43 +19,43 @@ const (
 
 const eps = 1e-6
 
-type statusResponseWriter struct {
+type StatusResponseWriter struct {
 	http.ResponseWriter
-	statusCode int
+	StatusCodeOuter int
 }
 
-func (w *statusResponseWriter) WriteHeader(code int) {
-	w.statusCode = code
+func (w *StatusResponseWriter) WriteHeader(code int) {
+	w.StatusCodeOuter = code
 	w.ResponseWriter.WriteHeader(code)
 }
 
-func (w *statusResponseWriter) StatusCode() int {
-	return w.statusCode
+func (w *StatusResponseWriter) StatusCode() int {
+	return w.StatusCodeOuter
 }
 
-type ErrorResponse struct {
+type ErrorResponseStruct struct {
 	Status string `json:"status"`
 	Error  string `json:"error"`
 }
 
-type SuccessResponse struct {
+type SuccessResponseStruct struct {
 	Status string      `json:"status"`
 	Data   interface{} `json:"data,omitempty"`
 }
 
-func errorResponse(w http.ResponseWriter, err string, statusCode int) {
+func ErrorResponse(w http.ResponseWriter, err string, statusCode int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
-	json.NewEncoder(w).Encode(ErrorResponse{Status: errorMsg, Error: err})
+	json.NewEncoder(w).Encode(ErrorResponseStruct{Status: errorMsg, Error: err})
 }
 
-func successResponse(w http.ResponseWriter, statusCode int, data interface{}) {
+func SuccessResponse(w http.ResponseWriter, statusCode int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
-	json.NewEncoder(w).Encode(SuccessResponse{Status: successMsg, Data: data})
+	json.NewEncoder(w).Encode(SuccessResponseStruct{Status: successMsg, Data: data})
 }
 
-func getStringClaimFromJWT(ctx context.Context, claim string) (strVal string, err error) {
+func GetStringClaimFromJWT(ctx context.Context, claim string) (strVal string, err error) {
 	_, claims, err := jwtauth.FromContext(ctx)
 	if err != nil {
 		return "", fmt.Errorf("getting claims from JWT: %w", err)
@@ -74,7 +74,7 @@ func getStringClaimFromJWT(ctx context.Context, claim string) (strVal string, er
 	return strVal, nil
 }
 
-func parsePeriodFromURL(r *http.Request) (period *domain.Period, err error) {
+func ParsePeriodFromURL(r *http.Request) (period *domain.Period, err error) {
 	yearStartStr := r.URL.Query().Get("start-year")
 	if yearStartStr == "" {
 		return nil, fmt.Errorf("empty year start")
@@ -125,7 +125,7 @@ func parsePeriodFromURL(r *http.Request) (period *domain.Period, err error) {
 	return period, nil
 }
 
-func parseUUIDFromURL(r *http.Request, key, entityName string) (val uuid.UUID, err error) {
+func ParseUUIDFromURL(r *http.Request, key, entityName string) (val uuid.UUID, err error) {
 	compIdStr := chi.URLParam(r, key)
 	if compIdStr == "" {
 		return uuid.UUID{}, fmt.Errorf("empty %s %s", entityName, key)
