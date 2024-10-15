@@ -51,13 +51,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.ActFieldsResponse"
+                            "$ref": "#/definitions/v2.ActFieldsResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -66,7 +66,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -97,16 +97,16 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -118,7 +118,59 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
+                        }
+                    }
+                }
+            }
+        },
+        "/activity_fields/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "activityFields"
+                ],
+                "summary": "Получение информации о сфере деятельности",
+                "operationId": "getActField",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Activity field` + "`" + `s id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v2.ActFieldResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -147,16 +199,16 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -168,7 +220,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -206,16 +258,16 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -227,14 +279,14 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
             }
         },
-        "/activity_fields/{id}": {
-            "get": {
+        "/companies": {
+            "post": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -244,30 +296,32 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "activity_fields"
+                    "companies"
                 ],
-                "summary": "Получение информации о сфере деятельности",
-                "operationId": "getActField",
+                "summary": "Добавление компании",
+                "operationId": "createCompany",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Activity field` + "`" + `s id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
+                        "description": "Company data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.Company"
+                        }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/web.ActFieldResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -276,13 +330,13 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
             }
         },
-        "/companies": {
+        "/companies/{id}": {
             "get": {
                 "security": [
                     {
@@ -310,71 +364,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.CompanyResponse"
+                            "$ref": "#/definitions/v2.CompanyResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
                         "description": "Unauthorized"
                     },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "companies"
-                ],
-                "summary": "Добавление компании",
-                "operationId": "createCompany",
-                "parameters": [
-                    {
-                        "description": "Company data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/web.Company"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
+                    "404": {
+                        "description": "Not Found"
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -403,16 +411,16 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -421,7 +429,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -459,16 +467,16 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -477,7 +485,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -500,10 +508,10 @@ const docTemplate = `{
                 "operationId": "getCompaniesReports",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Company ID",
-                        "name": "entrepreneur-id",
-                        "in": "query",
+                        "name": "id",
+                        "in": "path",
                         "required": true
                     },
                     {
@@ -539,13 +547,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.FinReportByPeriodResponse"
+                            "$ref": "#/definitions/v2.FinReportByPeriodResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -554,7 +562,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -592,16 +600,16 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -610,13 +618,64 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
             }
         },
         "/contacts": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "contacts"
+                ],
+                "summary": "Добавление средства связи",
+                "operationId": "createContact",
+                "parameters": [
+                    {
+                        "description": "Contact data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.Contact"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
+                        }
+                    }
+                }
+            }
+        },
+        "/contacts/{id}": {
             "get": {
                 "security": [
                     {
@@ -644,71 +703,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.ContactResponse"
+                            "$ref": "#/definitions/v2.ContactResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
                         "description": "Unauthorized"
                     },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "contacts"
-                ],
-                "summary": "Добавление средства связи",
-                "operationId": "createContact",
-                "parameters": [
-                    {
-                        "description": "Contact data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/web.Contact"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
+                    "404": {
+                        "description": "Not Found"
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -737,16 +750,16 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -755,7 +768,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -793,16 +806,16 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -811,7 +824,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -819,7 +832,7 @@ const docTemplate = `{
         },
         "/entrepreneurs": {
             "get": {
-                "description": "Метод для получения пагинированного списка предпринимателей с возможностью поиска по ФИО",
+                "description": "Метод для получения пагинированного списка предпринимателей",
                 "produces": [
                     "application/json"
                 ],
@@ -835,31 +848,80 @@ const docTemplate = `{
                         "name": "page",
                         "in": "query",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "FIO entry",
-                        "name": "name",
-                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.EntrepreneursResponse"
+                            "$ref": "#/definitions/v2.EntrepreneursResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
+                        }
+                    }
+                }
+            }
+        },
+        "/entrepreneurs/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "entrepreneurs"
+                ],
+                "summary": "Получение информации о предпринимателе",
+                "operationId": "getEntrepreneur",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Entrepreneur` + "`" + `s id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v2.EntrepreneurResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -888,16 +950,16 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -909,7 +971,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -947,16 +1009,16 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -968,59 +1030,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/entrepreneurs/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "entrepreneurs"
-                ],
-                "summary": "Получение информации о предпринимателе",
-                "operationId": "getEntrepreneur",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Entrepreneur` + "`" + `s id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/web.EntrepreneurResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -1050,10 +1060,10 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Entrepreneur ID",
-                        "name": "entrepreneur-id",
-                        "in": "query",
+                        "name": "id",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -1061,13 +1071,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.CompaniesResponse"
+                            "$ref": "#/definitions/v2.CompaniesResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -1076,7 +1086,52 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
+                        }
+                    }
+                }
+            }
+        },
+        "/entrepreneurs/{id}/contacts": {
+            "get": {
+                "description": "Метод для получения списка средств связи с предпринимателем",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "entrepreneurs"
+                ],
+                "summary": "Список средств связи предпринимателя",
+                "operationId": "listEntrepreneurContacts",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Entrepreneur ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v2.ContactsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -1095,11 +1150,11 @@ const docTemplate = `{
                 "tags": [
                     "entrepreneurs"
                 ],
-                "summary": "Получение финансовых отчетов компании",
+                "summary": "Получение финансовых отчетов предпринимателя",
                 "operationId": "calculateRating",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Entrepreneur ID",
                         "name": "id",
                         "in": "path",
@@ -1110,13 +1165,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.RatingResponse"
+                            "$ref": "#/definitions/v2.RatingResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -1125,7 +1180,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -1159,13 +1214,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.EntrepreneurReportResponse"
+                            "$ref": "#/definitions/v2.EntrepreneurReportResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -1174,11 +1229,13 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
-            },
+            }
+        },
+        "/financials/{id}": {
             "delete": {
                 "security": [
                     {
@@ -1203,16 +1260,16 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -1221,7 +1278,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -1259,16 +1316,16 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     },
                     "401": {
@@ -1277,7 +1334,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -1294,23 +1351,34 @@ const docTemplate = `{
                 ],
                 "summary": "Аутентификация",
                 "operationId": "login",
+                "parameters": [
+                    {
+                        "description": "Login data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.LoginReq"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
             }
         },
-        "/register": {
+        "/signup": {
             "post": {
                 "description": "Метод для регистрации",
                 "produces": [
@@ -1320,18 +1388,29 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "Регистрация",
-                "operationId": "register",
+                "operationId": "signup",
+                "parameters": [
+                    {
+                        "description": "Signup data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.RegisterReq"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/web.SuccessResponse"
+                            "$ref": "#/definitions/web.SuccessResponseStruct"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/web.ErrorResponse"
+                            "$ref": "#/definitions/web.ErrorResponseStruct"
                         }
                     }
                 }
@@ -1339,7 +1418,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "web.ActFieldResponse": {
+        "v2.ActFieldResponse": {
             "type": "object",
             "properties": {
                 "activityField": {
@@ -1347,7 +1426,7 @@ const docTemplate = `{
                 }
             }
         },
-        "web.ActFieldsResponse": {
+        "v2.ActFieldsResponse": {
             "type": "object",
             "properties": {
                 "activityFields": {
@@ -1358,6 +1437,129 @@ const docTemplate = `{
                 },
                 "numPages": {
                     "type": "integer"
+                }
+            }
+        },
+        "v2.CompaniesResponse": {
+            "type": "object",
+            "properties": {
+                "companies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/web.Company"
+                    }
+                },
+                "entrepreneurId": {
+                    "type": "string"
+                },
+                "numPages": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v2.CompanyResponse": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "$ref": "#/definitions/web.Company"
+                }
+            }
+        },
+        "v2.ContactResponse": {
+            "type": "object",
+            "properties": {
+                "contact": {
+                    "$ref": "#/definitions/web.Contact"
+                }
+            }
+        },
+        "v2.ContactsResponse": {
+            "type": "object",
+            "properties": {
+                "contacts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/web.Contact"
+                    }
+                },
+                "entrepreneurId": {
+                    "type": "string"
+                }
+            }
+        },
+        "v2.EntrepreneurReportResponse": {
+            "type": "object",
+            "properties": {
+                "costs": {
+                    "type": "number"
+                },
+                "profit": {
+                    "type": "number"
+                },
+                "revenue": {
+                    "type": "number"
+                },
+                "taxLoad": {
+                    "type": "number"
+                },
+                "taxes": {
+                    "type": "number"
+                }
+            }
+        },
+        "v2.EntrepreneurResponse": {
+            "type": "object",
+            "properties": {
+                "entrepreneur": {
+                    "$ref": "#/definitions/web.User"
+                }
+            }
+        },
+        "v2.EntrepreneursResponse": {
+            "type": "object",
+            "properties": {
+                "entrepreneurs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/web.User"
+                    }
+                },
+                "numPages": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v2.FinReportByPeriodResponse": {
+            "type": "object",
+            "properties": {
+                "companyId": {
+                    "type": "string"
+                },
+                "costs": {
+                    "type": "number"
+                },
+                "period": {
+                    "$ref": "#/definitions/web.Period"
+                },
+                "profit": {
+                    "type": "number"
+                },
+                "reports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/web.FinancialReport"
+                    }
+                },
+                "revenue": {
+                    "type": "number"
+                }
+            }
+        },
+        "v2.RatingResponse": {
+            "type": "object",
+            "properties": {
+                "rating": {
+                    "type": "number"
                 }
             }
         },
@@ -1375,23 +1577,6 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
-                }
-            }
-        },
-        "web.CompaniesResponse": {
-            "type": "object",
-            "properties": {
-                "companies": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/web.Company"
-                    }
-                },
-                "entrepreneurId": {
-                    "type": "string"
-                },
-                "numPages": {
-                    "type": "integer"
                 }
             }
         },
@@ -1415,14 +1600,6 @@ const docTemplate = `{
                 }
             }
         },
-        "web.CompanyResponse": {
-            "type": "object",
-            "properties": {
-                "company": {
-                    "$ref": "#/definitions/web.Company"
-                }
-            }
-        },
         "web.Contact": {
             "type": "object",
             "properties": {
@@ -1440,57 +1617,7 @@ const docTemplate = `{
                 }
             }
         },
-        "web.ContactResponse": {
-            "type": "object",
-            "properties": {
-                "contact": {
-                    "$ref": "#/definitions/web.Contact"
-                }
-            }
-        },
-        "web.EntrepreneurReportResponse": {
-            "type": "object",
-            "properties": {
-                "costs": {
-                    "type": "number"
-                },
-                "profit": {
-                    "type": "number"
-                },
-                "revenue": {
-                    "type": "number"
-                },
-                "taxLoad": {
-                    "type": "number"
-                },
-                "taxes": {
-                    "type": "number"
-                }
-            }
-        },
-        "web.EntrepreneurResponse": {
-            "type": "object",
-            "properties": {
-                "entrepreneur": {
-                    "$ref": "#/definitions/web.User"
-                }
-            }
-        },
-        "web.EntrepreneursResponse": {
-            "type": "object",
-            "properties": {
-                "entrepreneurs": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/web.User"
-                    }
-                },
-                "numPages": {
-                    "type": "integer"
-                }
-            }
-        },
-        "web.ErrorResponse": {
+        "web.ErrorResponseStruct": {
             "type": "object",
             "properties": {
                 "error": {
@@ -1498,32 +1625,6 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
-                }
-            }
-        },
-        "web.FinReportByPeriodResponse": {
-            "type": "object",
-            "properties": {
-                "companyId": {
-                    "type": "string"
-                },
-                "costs": {
-                    "type": "number"
-                },
-                "period": {
-                    "$ref": "#/definitions/web.Period"
-                },
-                "profit": {
-                    "type": "number"
-                },
-                "reports": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/web.FinancialReport"
-                    }
-                },
-                "revenue": {
-                    "type": "number"
                 }
             }
         },
@@ -1550,6 +1651,17 @@ const docTemplate = `{
                 }
             }
         },
+        "web.LoginReq": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "web.Period": {
             "type": "object",
             "properties": {
@@ -1567,15 +1679,18 @@ const docTemplate = `{
                 }
             }
         },
-        "web.RatingResponse": {
+        "web.RegisterReq": {
             "type": "object",
             "properties": {
-                "rating": {
-                    "type": "number"
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
                 }
             }
         },
-        "web.SuccessResponse": {
+        "web.SuccessResponseStruct": {
             "type": "object",
             "properties": {
                 "data": {},
@@ -1624,7 +1739,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:8081",
-	BasePath:         "/api/v1",
+	BasePath:         "/api/v2",
 	Schemes:          []string{},
 	Title:            "Cервис поиска партнеров-предпринимателей",
 	Description:      "Сервис призван помочь с поиском партнеров по бизнесу.",

@@ -39,6 +39,16 @@ type Company struct {
 	City            string    `json:"city,omitempty"`
 }
 
+type LoginReq struct {
+	Login    string `json:"login"`
+	Password string `json:"password"`
+}
+
+type RegisterReq struct {
+	Login    string `json:"login"`
+	Password string `json:"password"`
+}
+
 type FinancialReport struct {
 	ID        uuid.UUID `json:"id,omitempty"`
 	CompanyID uuid.UUID `json:"companyId,omitempty"`
@@ -55,7 +65,7 @@ type Period struct {
 	EndQuarter   int `json:"endQuarter"`
 }
 
-func toUserTransport(user *domain.User) User {
+func ToUserTransport(user *domain.User) User {
 	return User{
 		ID:       user.ID,
 		Username: user.Username,
@@ -67,7 +77,7 @@ func toUserTransport(user *domain.User) User {
 	}
 }
 
-func toUserModel(user *User) domain.User {
+func ToUserModel(user *User) domain.User {
 	return domain.User{
 		ID:       user.ID,
 		Username: user.Username,
@@ -79,7 +89,7 @@ func toUserModel(user *User) domain.User {
 	}
 }
 
-func toContactTransport(contact *domain.Contact) Contact {
+func ToContactTransport(contact *domain.Contact) Contact {
 	return Contact{
 		ID:      contact.ID,
 		OwnerID: contact.OwnerID,
@@ -88,7 +98,7 @@ func toContactTransport(contact *domain.Contact) Contact {
 	}
 }
 
-func toContactModel(contact *Contact) domain.Contact {
+func ToContactModel(contact *Contact) domain.Contact {
 	return domain.Contact{
 		ID:      contact.ID,
 		OwnerID: contact.OwnerID,
@@ -97,7 +107,7 @@ func toContactModel(contact *Contact) domain.Contact {
 	}
 }
 
-func toActFieldTransport(field *domain.ActivityField) ActivityField {
+func ToActFieldTransport(field *domain.ActivityField) ActivityField {
 	return ActivityField{
 		ID:          field.ID,
 		Name:        field.Name,
@@ -106,7 +116,7 @@ func toActFieldTransport(field *domain.ActivityField) ActivityField {
 	}
 }
 
-func toActFieldModel(field *ActivityField) domain.ActivityField {
+func ToActFieldModel(field *ActivityField) domain.ActivityField {
 	return domain.ActivityField{
 		ID:          field.ID,
 		Name:        field.Name,
@@ -115,7 +125,7 @@ func toActFieldModel(field *ActivityField) domain.ActivityField {
 	}
 }
 
-func toCompanyTransport(company *domain.Company) Company {
+func ToCompanyTransport(company *domain.Company) Company {
 	return Company{
 		ID:              company.ID,
 		OwnerID:         company.OwnerID,
@@ -125,7 +135,7 @@ func toCompanyTransport(company *domain.Company) Company {
 	}
 }
 
-func toCompanyModel(company *Company) domain.Company {
+func ToCompanyModel(company *Company) domain.Company {
 	return domain.Company{
 		ID:              company.ID,
 		OwnerID:         company.OwnerID,
@@ -135,7 +145,7 @@ func toCompanyModel(company *Company) domain.Company {
 	}
 }
 
-func toFinReportTransport(finReport *domain.FinancialReport) FinancialReport {
+func ToFinReportTransport(finReport *domain.FinancialReport) FinancialReport {
 	return FinancialReport{
 		ID:        finReport.ID,
 		CompanyID: finReport.CompanyID,
@@ -146,7 +156,7 @@ func toFinReportTransport(finReport *domain.FinancialReport) FinancialReport {
 	}
 }
 
-func toFinReportModel(finReport *FinancialReport) domain.FinancialReport {
+func ToFinReportModel(finReport *FinancialReport) domain.FinancialReport {
 	return domain.FinancialReport{
 		ID:        finReport.ID,
 		CompanyID: finReport.CompanyID,
@@ -157,7 +167,7 @@ func toFinReportModel(finReport *FinancialReport) domain.FinancialReport {
 	}
 }
 
-func toPeriodTransport(per *domain.Period) Period {
+func ToPeriodTransport(per *domain.Period) Period {
 	return Period{
 		StartYear:    per.StartYear,
 		StartQuarter: per.StartQuarter,

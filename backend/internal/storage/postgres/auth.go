@@ -2,9 +2,12 @@ package postgres
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"ppo/domain"
+	"ppo/pkg/errs"
 )
 
 type AuthRepository struct {
@@ -46,7 +49,9 @@ func (r *AuthRepository) GetByUsername(ctx context.Context, username string) (da
 		&tmp.HashedPass,
 		&tmp.Role,
 	)
-	if err != nil {
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, errs.ErrNotFound
+	} else if err != nil {
 		return nil, fmt.Errorf("получение пользователя по username: %w", err)
 	}
 
