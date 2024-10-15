@@ -9,7 +9,6 @@ import (
 	"github.com/go-chi/jwtauth/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	httpSwagger "github.com/swaggo/http-swagger/v2"
 	"log"
 	"net/http"
 	"os"
@@ -19,6 +18,7 @@ import (
 	loggerPackage "ppo/pkg/logger"
 	"ppo/web"
 	v1 "ppo/web/v1"
+	v2 "ppo/web/v2"
 )
 
 var tokenAuth *jwtauth.JWTAuth
@@ -103,10 +103,6 @@ func main() {
 	}))
 
 	mux.Use(middleware.Logger)
-
-	mux.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:8081/swagger/doc.json"), //The url pointing to API definition
-	))
 
 	mux.Route("/api", func(r chi.Router) {
 		r.Route("/v1", func(r chi.Router) {
@@ -196,18 +192,26 @@ func main() {
 
 		r.Route("/v2", func(r chi.Router) {
 			r.Route("/entrepreneurs", func(r chi.Router) {
-				r.Get("/{id}", v1.GetEntrepreneur(a))
-				r.Get("/", v1.ListEntrepreneurs(a))
-				r.Get("/{id}/rating", v1.CalculateRating(a))
-				r.Get("/companies", v1.ListEntrepreneurCompanies(a))
+				r.Get("/{id}", v2.GetEntrepreneur(a))
+				r.Get("/", v2.ListEntrepreneurs(a))
+				r.Get("/{id}/rating", v2.CalculateRating(a))
+				r.Get("/{id}/companies", v2.ListEntrepreneurCompanies(a))
+
+				r.Group(func(r chi.Router) {
+					r.Use(jwtauth.Verifier(tokenAuth))
+					r.Use(jwtauth.Authenticator(tokenAuth))
+					r.Use(web.ValidateUserRoleJWT)
+
+					r.Get("/{id}/contacts", v2.ListEntrepreneurContacts(a))
+				})
 
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
 					r.Use(web.ValidateAdminRoleJWT)
 
-					r.Patch("/{id}", v1.UpdateEntrepreneur(a))
-					r.Delete("/{id}", v1.DeleteEntrepreneur(a))
+					r.Patch("/{id}", v2.UpdateEntrepreneur(a))
+					r.Delete("/{id}", v2.DeleteEntrepreneur(a))
 				})
 			})
 
@@ -217,40 +221,39 @@ func main() {
 					r.Use(jwtauth.Authenticator(tokenAuth))
 					r.Use(web.ValidateUserRoleJWT)
 
-					r.Get("/", v1.ListEntrepreneurContacts(a))
-					r.Post("/", v1.CreateContact(a))
-					r.Get("/{id}", v1.GetContact(a))
-					r.Patch("/{id}", v1.UpdateContact(a))
-					r.Delete("/{id}", v1.DeleteContact(a))
+					r.Post("/", v2.CreateContact(a))
+					r.Get("/{id}", v2.GetContact(a))
+					r.Patch("/{id}", v2.UpdateContact(a))
+					r.Delete("/{id}", v2.DeleteContact(a))
 				})
 			})
 
 			r.Route("/activity_fields", func(r chi.Router) {
-				r.Get("/{id}", v1.GetActivityField(a))
-				r.Get("/", v1.ListActivityFields(a))
+				r.Get("/{id}", v2.GetActivityField(a))
+				r.Get("/", v2.ListActivityFields(a))
 
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
 					r.Use(web.ValidateAdminRoleJWT)
 
-					r.Post("/", v1.CreateActivityField(a))
-					r.Patch("/{id}", v1.UpdateActivityField(a))
-					r.Delete("/{id}", v1.DeleteActivityField(a))
+					r.Post("/", v2.CreateActivityField(a))
+					r.Patch("/{id}", v2.UpdateActivityField(a))
+					r.Delete("/{id}", v2.DeleteActivityField(a))
 				})
 			})
 
 			r.Route("/companies", func(r chi.Router) {
-				r.Get("/{id}", v1.GetCompany(a))
+				r.Get("/{id}", v2.GetCompany(a))
 
 				r.Group(func(r chi.Router) {
 					r.Use(jwtauth.Verifier(tokenAuth))
 					r.Use(jwtauth.Authenticator(tokenAuth))
 					r.Use(web.ValidateUserRoleJWT)
 
-					r.Post("/", v1.CreateCompany(a))
-					r.Patch("/{id}", v1.UpdateCompany(a))
-					r.Delete("/{id}", v1.DeleteCompany(a))
+					r.Post("/", v2.CreateCompany(a))
+					r.Patch("/{id}", v2.UpdateCompany(a))
+					r.Delete("/{id}", v2.DeleteCompany(a))
 				})
 
 				r.Route("/{id}/financials", func(r chi.Router) {
@@ -258,8 +261,8 @@ func main() {
 					r.Use(jwtauth.Authenticator(tokenAuth))
 					r.Use(web.ValidateUserRoleJWT)
 
-					r.Post("/", v1.CreateReport(a))
-					r.Get("/", v1.ListCompanyReports(a))
+					r.Post("/", v2.CreateReport(a))
+					r.Get("/", v2.ListCompanyReports(a))
 				})
 			})
 
@@ -269,14 +272,14 @@ func main() {
 					r.Use(jwtauth.Authenticator(tokenAuth))
 					r.Use(web.ValidateUserRoleJWT)
 
-					r.Get("/", v1.GetEntrepreneurFinancials(a))
-					r.Delete("/{id}", v1.DeleteFinReport(a))
-					r.Patch("/{id}", v1.UpdateFinReport(a))
+					r.Get("/", v2.GetEntrepreneurFinancials(a))
+					r.Delete("/{id}", v2.DeleteFinReport(a))
+					r.Patch("/{id}", v2.UpdateFinReport(a))
 				})
 			})
 
-			r.Post("/login", v1.LoginHandler(a))
-			r.Post("/signup", v1.RegisterHandler(a))
+			r.Post("/login", v2.LoginHandler(a))
+			r.Post("/signup", v2.RegisterHandler(a))
 		})
 	})
 

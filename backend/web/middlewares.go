@@ -30,6 +30,15 @@ func ValidateAdminRoleJWT(next http.Handler) http.Handler {
 	})
 }
 
+func Test(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(r.Context())
+		fmt.Println(r.Header)
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func ValidateUserRoleJWT(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		_, claims, err := jwtauth.FromContext(r.Context())

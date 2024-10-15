@@ -2,9 +2,12 @@ package postgres
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"github.com/jackc/pgx/v5"
 	"ppo/domain"
 	"ppo/internal/config"
+	"ppo/pkg/errs"
 	"strings"
 
 	"github.com/google/uuid"
@@ -63,7 +66,9 @@ func (r *UserRepository) GetByUsername(ctx context.Context, username string) (us
 		&tmp.City,
 		&tmp.Role,
 	)
-	if err != nil {
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, errs.ErrNotFound
+	} else if err != nil {
 		return nil, fmt.Errorf("получение пользователя по username: %w", err)
 	}
 
@@ -86,7 +91,9 @@ func (r *UserRepository) GetById(ctx context.Context, userId uuid.UUID) (user *d
 		&tmp.City,
 		&tmp.Role,
 	)
-	if err != nil {
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, errs.ErrNotFound
+	} else if err != nil {
 		return nil, fmt.Errorf("получение пользователя по id: %w", err)
 	}
 

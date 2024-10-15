@@ -1,11 +1,11 @@
 basePath: /api/v2
 definitions:
-  web.ActFieldResponse:
+  v2.ActFieldResponse:
     properties:
       activityField:
         $ref: '#/definitions/web.ActivityField'
     type: object
-  web.ActFieldsResponse:
+  v2.ActFieldsResponse:
     properties:
       activityFields:
         items:
@@ -14,18 +14,7 @@ definitions:
       numPages:
         type: integer
     type: object
-  web.ActivityField:
-    properties:
-      cost:
-        type: number
-      description:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-    type: object
-  web.CompaniesResponse:
+  v2.CompaniesResponse:
     properties:
       companies:
         items:
@@ -36,41 +25,26 @@ definitions:
       numPages:
         type: integer
     type: object
-  web.Company:
-    properties:
-      activityFieldId:
-        type: string
-      city:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      ownerId:
-        type: string
-    type: object
-  web.CompanyResponse:
+  v2.CompanyResponse:
     properties:
       company:
         $ref: '#/definitions/web.Company'
     type: object
-  web.Contact:
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-      ownerId:
-        type: string
-      value:
-        type: string
-    type: object
-  web.ContactResponse:
+  v2.ContactResponse:
     properties:
       contact:
         $ref: '#/definitions/web.Contact'
     type: object
-  web.EntrepreneurReportResponse:
+  v2.ContactsResponse:
+    properties:
+      contacts:
+        items:
+          $ref: '#/definitions/web.Contact'
+        type: array
+      entrepreneurId:
+        type: string
+    type: object
+  v2.EntrepreneurReportResponse:
     properties:
       costs:
         type: number
@@ -83,12 +57,12 @@ definitions:
       taxes:
         type: number
     type: object
-  web.EntrepreneurResponse:
+  v2.EntrepreneurResponse:
     properties:
       entrepreneur:
         $ref: '#/definitions/web.User'
     type: object
-  web.EntrepreneursResponse:
+  v2.EntrepreneursResponse:
     properties:
       entrepreneurs:
         items:
@@ -97,14 +71,7 @@ definitions:
       numPages:
         type: integer
     type: object
-  web.ErrorResponseStruct:
-    properties:
-      error:
-        type: string
-      status:
-        type: string
-    type: object
-  web.FinReportByPeriodResponse:
+  v2.FinReportByPeriodResponse:
     properties:
       companyId:
         type: string
@@ -120,6 +87,53 @@ definitions:
         type: array
       revenue:
         type: number
+    type: object
+  v2.RatingResponse:
+    properties:
+      rating:
+        type: number
+    type: object
+  web.ActivityField:
+    properties:
+      cost:
+        type: number
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  web.Company:
+    properties:
+      activityFieldId:
+        type: string
+      city:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      ownerId:
+        type: string
+    type: object
+  web.Contact:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      ownerId:
+        type: string
+      value:
+        type: string
+    type: object
+  web.ErrorResponseStruct:
+    properties:
+      error:
+        type: string
+      status:
+        type: string
     type: object
   web.FinancialReport:
     properties:
@@ -153,11 +167,6 @@ definitions:
         type: integer
       startYear:
         type: integer
-    type: object
-  web.RatingResponse:
-    properties:
-      rating:
-        type: number
     type: object
   web.RegisterReq:
     properties:
@@ -203,38 +212,6 @@ info:
   version: "1.0"
 paths:
   /activity_fields:
-    delete:
-      operationId: deleteActField
-      parameters:
-      - description: Activity Field`s id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/web.SuccessResponseStruct'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/web.ErrorResponseStruct'
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/web.ErrorResponseStruct'
-      security:
-      - BearerAuth: []
-      summary: Удаление информации о сфере деятельности
-      tags:
-      - activityFields
     get:
       operationId: listActivityFields
       parameters:
@@ -249,7 +226,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.ActFieldsResponse'
+            $ref: '#/definitions/v2.ActFieldsResponse'
         "400":
           description: Bad Request
           schema:
@@ -265,44 +242,6 @@ paths:
       summary: Получение списка сфер деятельности
       tags:
       - activityFields
-    patch:
-      operationId: updateActivityField
-      parameters:
-      - description: Activity Field id
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Activity Field data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/web.ActivityField'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/web.SuccessResponseStruct'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/web.ErrorResponseStruct'
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/web.ErrorResponseStruct'
-      security:
-      - BearerAuth: []
-      summary: Обновление информации о сфере деятельности
-      tags:
-      - activityFields
     post:
       operationId: createActField
       parameters:
@@ -315,8 +254,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
           schema:
             $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
@@ -337,6 +276,38 @@ paths:
       tags:
       - activityFields
   /activity_fields/{id}:
+    delete:
+      operationId: deleteActField
+      parameters:
+      - description: Activity Field`s id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/web.SuccessResponseStruct'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ErrorResponseStruct'
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ErrorResponseStruct'
+      security:
+      - BearerAuth: []
+      summary: Удаление информации о сфере деятельности
+      tags:
+      - activityFields
     get:
       operationId: getActField
       parameters:
@@ -351,7 +322,79 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.ActFieldResponse'
+            $ref: '#/definitions/v2.ActFieldResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ErrorResponseStruct'
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ErrorResponseStruct'
+      security:
+      - BearerAuth: []
+      summary: Получение информации о сфере деятельности
+      tags:
+      - activityFields
+    patch:
+      operationId: updateActivityField
+      parameters:
+      - description: Activity Field id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Activity Field data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/web.ActivityField'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/web.SuccessResponseStruct'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ErrorResponseStruct'
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ErrorResponseStruct'
+      security:
+      - BearerAuth: []
+      summary: Обновление информации о сфере деятельности
+      tags:
+      - activityFields
+  /companies:
+    post:
+      operationId: createCompany
+      parameters:
+      - description: Company data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/web.Company'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
           description: Bad Request
           schema:
@@ -364,10 +407,10 @@ paths:
             $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
-      summary: Получение информации о сфере деятельности
+      summary: Добавление компании
       tags:
-      - activityFields
-  /companies:
+      - companies
+  /companies/{id}:
     delete:
       operationId: deleteCompany
       parameters:
@@ -379,8 +422,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
           schema:
             $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
@@ -412,13 +455,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.CompanyResponse'
+            $ref: '#/definitions/v2.CompanyResponse'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
+        "404":
+          description: Not Found
         "500":
           description: Internal Server Error
           schema:
@@ -445,8 +490,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
           schema:
             $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
@@ -464,46 +509,15 @@ paths:
       summary: Обновление информации о компании
       tags:
       - companies
-    post:
-      operationId: createCompany
-      parameters:
-      - description: Company data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/web.Company'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/web.SuccessResponseStruct'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/web.ErrorResponseStruct'
-        "401":
-          description: Unauthorized
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/web.ErrorResponseStruct'
-      security:
-      - BearerAuth: []
-      summary: Добавление компании
-      tags:
-      - companies
   /companies/{id}/financials:
     get:
       operationId: getCompaniesReports
       parameters:
       - description: Company ID
-        in: query
-        name: entrepreneur-id
+        in: path
+        name: id
         required: true
-        type: integer
+        type: string
       - description: Start year
         in: query
         name: start-year
@@ -530,7 +544,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.FinReportByPeriodResponse'
+            $ref: '#/definitions/v2.FinReportByPeriodResponse'
         "400":
           description: Bad Request
           schema:
@@ -563,8 +577,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
           schema:
             $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
@@ -583,6 +597,38 @@ paths:
       tags:
       - financialsReports
   /contacts:
+    post:
+      operationId: createContact
+      parameters:
+      - description: Contact data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/web.Contact'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/web.SuccessResponseStruct'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ErrorResponseStruct'
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ErrorResponseStruct'
+      security:
+      - BearerAuth: []
+      summary: Добавление средства связи
+      tags:
+      - contacts
+  /contacts/{id}:
     delete:
       operationId: deleteContact
       parameters:
@@ -594,8 +640,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
           schema:
             $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
@@ -627,13 +673,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.ContactResponse'
+            $ref: '#/definitions/v2.ContactResponse'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/web.ErrorResponseStruct'
         "401":
           description: Unauthorized
+        "404":
+          description: Not Found
         "500":
           description: Internal Server Error
           schema:
@@ -660,8 +708,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
           schema:
             $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
@@ -679,38 +727,35 @@ paths:
       summary: Обновление средства связи
       tags:
       - contacts
-    post:
-      operationId: createContact
+  /entrepreneurs:
+    get:
+      description: Метод для получения пагинированного списка предпринимателей
+      operationId: listEntrepreneurs
       parameters:
-      - description: Contact data
-        in: body
-        name: data
+      - description: Page number
+        in: query
+        name: page
         required: true
-        schema:
-          $ref: '#/definitions/web.Contact'
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.SuccessResponseStruct'
+            $ref: '#/definitions/v2.EntrepreneursResponse'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/web.ErrorResponseStruct'
-        "401":
-          description: Unauthorized
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/web.ErrorResponseStruct'
-      security:
-      - BearerAuth: []
-      summary: Добавление средства связи
+      summary: Список предпринимателей
       tags:
-      - contacts
-  /entrepreneurs:
+      - entrepreneurs
+  /entrepreneurs/{id}:
     delete:
       operationId: deleteEntrepreneur
       parameters:
@@ -722,8 +767,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
           schema:
             $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
@@ -744,18 +789,12 @@ paths:
       tags:
       - entrepreneurs
     get:
-      description: Метод для получения пагинированного списка предпринимателей с возможностью
-        поиска по ФИО
-      operationId: listEntrepreneurs
+      operationId: getEntrepreneur
       parameters:
-      - description: Page number
-        in: query
-        name: page
+      - description: Entrepreneur`s id
+        in: path
+        name: id
         required: true
-        type: integer
-      - description: FIO entry
-        in: query
-        name: name
         type: string
       produces:
       - application/json
@@ -763,16 +802,24 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.EntrepreneursResponse'
+            $ref: '#/definitions/v2.EntrepreneurResponse'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/web.ErrorResponseStruct'
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/web.ErrorResponseStruct'
-      summary: Список предпринимателей
+      security:
+      - BearerAuth: []
+      summary: Получение информации о предпринимателе
       tags:
       - entrepreneurs
     patch:
@@ -792,8 +839,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
           schema:
             $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
@@ -813,39 +860,6 @@ paths:
       summary: Обновление информации о предпринимателе
       tags:
       - entrepreneurs
-  /entrepreneurs/{id}:
-    get:
-      operationId: getEntrepreneur
-      parameters:
-      - description: Entrepreneur`s id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/web.EntrepreneurResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/web.ErrorResponseStruct'
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/web.ErrorResponseStruct'
-      security:
-      - BearerAuth: []
-      summary: Получение информации о предпринимателе
-      tags:
-      - entrepreneurs
   /entrepreneurs/{id}/companies:
     get:
       operationId: getEntrepreneurCompanies
@@ -856,17 +870,17 @@ paths:
         required: true
         type: integer
       - description: Entrepreneur ID
-        in: query
-        name: entrepreneur-id
+        in: path
+        name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.CompaniesResponse'
+            $ref: '#/definitions/v2.CompaniesResponse'
         "400":
           description: Bad Request
           schema:
@@ -882,6 +896,36 @@ paths:
       summary: Получение информации о компаниях предпринимателя
       tags:
       - companies
+  /entrepreneurs/{id}/contacts:
+    get:
+      description: Метод для получения списка средств связи с предпринимателем
+      operationId: listEntrepreneurContacts
+      parameters:
+      - description: Entrepreneur ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v2.ContactsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ErrorResponseStruct'
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ErrorResponseStruct'
+      summary: Список средств связи предпринимателя
+      tags:
+      - entrepreneurs
   /entrepreneurs/{id}/rating:
     get:
       operationId: calculateRating
@@ -890,14 +934,14 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/web.RatingResponse'
+            $ref: '#/definitions/v2.RatingResponse'
         "400":
           description: Bad Request
           schema:
@@ -910,10 +954,41 @@ paths:
             $ref: '#/definitions/web.ErrorResponseStruct'
       security:
       - BearerAuth: []
-      summary: Получение финансовых отчетов компании
+      summary: Получение финансовых отчетов предпринимателя
       tags:
       - entrepreneurs
   /financials:
+    get:
+      operationId: getEntrepreneurFinReport
+      parameters:
+      - description: Entrepreneur`s id
+        in: query
+        name: entrepreneur-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v2.EntrepreneurReportResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ErrorResponseStruct'
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ErrorResponseStruct'
+      security:
+      - BearerAuth: []
+      summary: Получение информации об отчете
+      tags:
+      - financialsReports
+  /financials/{id}:
     delete:
       operationId: deleteFinReport
       parameters:
@@ -925,8 +1000,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
           schema:
             $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
@@ -942,36 +1017,6 @@ paths:
       security:
       - BearerAuth: []
       summary: Удаление информации об отчете
-      tags:
-      - financialsReports
-    get:
-      operationId: getEntrepreneurFinReport
-      parameters:
-      - description: Entrepreneur`s id
-        in: query
-        name: entrepreneur-id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/web.EntrepreneurReportResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/web.ErrorResponseStruct'
-        "401":
-          description: Unauthorized
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/web.ErrorResponseStruct'
-      security:
-      - BearerAuth: []
-      summary: Получение информации об отчете
       tags:
       - financialsReports
     patch:
@@ -991,8 +1036,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
           schema:
             $ref: '#/definitions/web.SuccessResponseStruct'
         "400":
@@ -1035,10 +1080,10 @@ paths:
       summary: Аутентификация
       tags:
       - users
-  /register:
+  /signup:
     post:
       description: Метод для регистрации
-      operationId: register
+      operationId: signup
       parameters:
       - description: Signup data
         in: body

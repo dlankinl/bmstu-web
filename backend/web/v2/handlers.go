@@ -2,10 +2,12 @@ package v2
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"ppo/domain"
 	"ppo/internal/app"
+	"ppo/pkg/errs"
 	"ppo/web"
 	"strconv"
 	"time"
@@ -69,14 +71,14 @@ func LoginHandler(app *app.App) http.HandlerFunc {
 // RegisterHandler godoc
 //
 //	@Summary		Регистрация
-//	@ID				register
+//	@ID				signup
 //	@Produce json
 //	@Description	Метод для регистрации
 //	@Param data body web.RegisterReq true "Signup data"
 //	@Tags			users
 //	@Success		200	{object} web.SuccessResponseStruct
 //	@Failure		400	{object} web.ErrorResponseStruct
-//	@Router			/register [post]
+//	@Router			/signup [post]
 func RegisterHandler(app *app.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		prompt := "RegisterHandler"
@@ -109,16 +111,17 @@ func RegisterHandler(app *app.App) http.HandlerFunc {
 	}
 }
 
+//	@Param name query string false "FIO entry"
+
 // ListEntrepreneurs godoc
 //
 //	@Summary		Список предпринимателей
 //	@ID				listEntrepreneurs
 //	@Produce json
-//	@Description	Метод для получения пагинированного списка предпринимателей с возможностью поиска по ФИО
+//	@Description	Метод для получения пагинированного списка предпринимателей
 //	@Tags			entrepreneurs
 //	@Param page query integer true "Page number"
-//	@Param name query string false "FIO entry"
-//	@Success		200	{object} web.EntrepreneursResponse
+//	@Success		200	{object} EntrepreneursResponse
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure 		500 {object} web.ErrorResponseStruct
 //	@Router			/entrepreneurs [get]
@@ -159,7 +162,7 @@ func ListEntrepreneurs(app *app.App) http.HandlerFunc {
 			usersTransport[i] = web.ToUserTransport(user)
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, web.EntrepreneursResponse{Pages: numPages, Entrepreneurs: usersTransport})
+		web.SuccessResponse(wrappedWriter, http.StatusOK, EntrepreneursResponse{Pages: numPages, Entrepreneurs: usersTransport})
 	}
 }
 
@@ -171,13 +174,13 @@ func ListEntrepreneurs(app *app.App) http.HandlerFunc {
 //	@Tags			entrepreneurs
 //	@Param id path string true "Entrepreneur`s id"
 //	@Param data body web.User true "Entrepreneur data"
-//	@Success		200	{object} web.SuccessResponseStruct
+//	@Success		204	{object} web.SuccessResponseStruct
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure		403
 //	@Failure 		500 {object} web.ErrorResponseStruct
 //	@Security		BearerAuth
-//	@Router			/entrepreneurs [patch]
+//	@Router			/entrepreneurs/{id} [patch]
 func UpdateEntrepreneur(app *app.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		prompt := "UpdateEntrepreneurHandler"
@@ -222,7 +225,7 @@ func UpdateEntrepreneur(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, nil)
+		web.SuccessResponse(wrappedWriter, http.StatusNoContent, nil)
 	}
 }
 
@@ -233,13 +236,13 @@ func UpdateEntrepreneur(app *app.App) http.HandlerFunc {
 //	@Produce json
 //	@Tags			entrepreneurs
 //	@Param id path string true "Entrepreneur`s id"
-//	@Success		200	{object} web.SuccessResponseStruct
+//	@Success		204	{object} web.SuccessResponseStruct
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure		403
 //	@Failure 		500 {object} web.ErrorResponseStruct
 //	@Security		BearerAuth
-//	@Router			/entrepreneurs [delete]
+//	@Router			/entrepreneurs/{id} [delete]
 func DeleteEntrepreneur(app *app.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		prompt := "DeleteEntrepreneurHandler"
@@ -272,7 +275,7 @@ func DeleteEntrepreneur(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, nil)
+		web.SuccessResponse(wrappedWriter, http.StatusNoContent, nil)
 	}
 }
 
@@ -283,10 +286,11 @@ func DeleteEntrepreneur(app *app.App) http.HandlerFunc {
 //	@Produce json
 //	@Tags			entrepreneurs
 //	@Param id path string true "Entrepreneur`s id"
-//	@Success		200	{object} web.EntrepreneurResponse
+//	@Success		200	{object} EntrepreneurResponse
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure		403
+//	@Failure		404
 //	@Failure 		500 {object} web.ErrorResponseStruct
 //	@Security		BearerAuth
 //	@Router			/entrepreneurs/{id} [get]
@@ -317,12 +321,16 @@ func GetEntrepreneur(app *app.App) http.HandlerFunc {
 
 		user, err := app.UserSvc.GetById(r.Context(), idUuid)
 		if err != nil {
+			if errors.Is(err, errs.ErrNotFound) {
+				web.ErrorResponse(wrappedWriter, fmt.Errorf("%s: %w", prompt, err).Error(), http.StatusNotFound)
+			} else {
+				web.ErrorResponse(wrappedWriter, fmt.Errorf("%s: %w", prompt, err).Error(), http.StatusInternalServerError)
+			}
 			app.Logger.Infof("%s: %v", prompt, err)
-			web.ErrorResponse(wrappedWriter, fmt.Errorf("%s: %w", prompt, err).Error(), http.StatusInternalServerError)
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, web.EntrepreneurResponse{Entrepreneur: web.ToUserTransport(user)})
+		web.SuccessResponse(wrappedWriter, http.StatusOK, EntrepreneurResponse{Entrepreneur: web.ToUserTransport(user)})
 	}
 }
 
@@ -333,7 +341,7 @@ func GetEntrepreneur(app *app.App) http.HandlerFunc {
 //	@Produce json
 //	@Tags			contacts
 //	@Param data body web.Contact true "Contact data"
-//	@Success		200	{object} web.SuccessResponseStruct
+//	@Success		204	{object} web.SuccessResponseStruct
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure 		500 {object} web.ErrorResponseStruct
@@ -382,7 +390,7 @@ func CreateContact(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, nil)
+		web.SuccessResponse(wrappedWriter, http.StatusNoContent, nil)
 	}
 }
 
@@ -393,12 +401,12 @@ func CreateContact(app *app.App) http.HandlerFunc {
 //	@Produce json
 //	@Tags			contacts
 //	@Param id path string true "Contact id"
-//	@Success		200	{object} web.SuccessResponseStruct
+//	@Success		204	{object} web.SuccessResponseStruct
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure 		500 {object} web.ErrorResponseStruct
 //	@Security		BearerAuth
-//	@Router			/contacts [delete]
+//	@Router			/contacts/{id} [delete]
 func DeleteContact(app *app.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		prompt := "DeleteContactHandler"
@@ -445,7 +453,7 @@ func DeleteContact(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, nil)
+		web.SuccessResponse(wrappedWriter, http.StatusNoContent, nil)
 	}
 }
 
@@ -457,12 +465,12 @@ func DeleteContact(app *app.App) http.HandlerFunc {
 //	@Tags			contacts
 //	@Param id path string true "Contact id"
 //	@Param data body web.Contact true "Contact data"
-//	@Success		200	{object} web.SuccessResponseStruct
+//	@Success		204	{object} web.SuccessResponseStruct
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure 		500 {object} web.ErrorResponseStruct
 //	@Security		BearerAuth
-//	@Router			/contacts [patch]
+//	@Router			/contacts/{id} [patch]
 func UpdateContact(app *app.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		prompt := "UpdateContactHandler"
@@ -520,7 +528,7 @@ func UpdateContact(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, nil)
+		web.SuccessResponse(wrappedWriter, http.StatusNoContent, nil)
 	}
 }
 
@@ -531,12 +539,13 @@ func UpdateContact(app *app.App) http.HandlerFunc {
 //	@Produce json
 //	@Tags			contacts
 //	@Param id path string true "Contact`s id"
-//	@Success		200	{object} web.ContactResponse
+//	@Success		200	{object} ContactResponse
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
+//	@Failure		404
 //	@Failure 		500 {object} web.ErrorResponseStruct
 //	@Security		BearerAuth
-//	@Router			/contacts [get]
+//	@Router			/contacts/{id} [get]
 func GetContact(app *app.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		prompt := "GetContactHandler"
@@ -564,15 +573,32 @@ func GetContact(app *app.App) http.HandlerFunc {
 
 		contact, err := app.ConSvc.GetById(r.Context(), idUuid)
 		if err != nil {
+			if errors.Is(err, errs.ErrNotFound) {
+				web.ErrorResponse(wrappedWriter, fmt.Errorf("получение средства связи по id: %w", err).Error(), http.StatusNotFound)
+			} else {
+				web.ErrorResponse(wrappedWriter, fmt.Errorf("получение средства связи по id: %w", err).Error(), http.StatusInternalServerError)
+			}
 			app.Logger.Infof("%s: получение средства связи по id: %v", prompt, err)
-			web.ErrorResponse(wrappedWriter, fmt.Errorf("получение средства связи по id: %w", err).Error(), http.StatusInternalServerError)
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, web.ContactResponse{Contact: web.ToContactTransport(contact)})
+		web.SuccessResponse(wrappedWriter, http.StatusOK, ContactResponse{Contact: web.ToContactTransport(contact)})
 	}
 }
 
+// ListEntrepreneurContacts godoc
+//
+//	@Summary		Список средств связи предпринимателя
+//	@ID				listEntrepreneurContacts
+//	@Produce json
+//	@Description	Метод для получения списка средств связи с предпринимателем
+//	@Tags			entrepreneurs
+//	@Param id path string true "Entrepreneur ID"
+//	@Success		200	{object} ContactsResponse
+//	@Failure		400	{object} web.ErrorResponseStruct
+//	@Failure		404
+//	@Failure 		500 {object} web.ErrorResponseStruct
+//	@Router			/entrepreneurs/{id}/contacts [get]
 func ListEntrepreneurContacts(app *app.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		prompt := "ListEntrepreneursContactsHandler"
@@ -584,7 +610,7 @@ func ListEntrepreneurContacts(app *app.App) http.HandlerFunc {
 			web.ObserveRequest(time.Since(start), wrappedWriter.StatusCode(), r.Method, prompt)
 		}()
 
-		entId := r.URL.Query().Get("entrepreneur-id")
+		entId := chi.URLParam(r, "id")
 		if entId == "" {
 			app.Logger.Infof("%s: пустой id предпринимателя", prompt)
 			web.ErrorResponse(wrappedWriter, fmt.Errorf("пустой id предпринимателя").Error(), http.StatusBadRequest)
@@ -600,8 +626,12 @@ func ListEntrepreneurContacts(app *app.App) http.HandlerFunc {
 
 		contacts, err := app.ConSvc.GetByOwnerId(r.Context(), entUuid)
 		if err != nil {
+			if errors.Is(err, errs.ErrNotFound) {
+				web.ErrorResponse(wrappedWriter, fmt.Errorf("получение списка контактов: %w", err).Error(), http.StatusNotFound)
+			} else {
+				web.ErrorResponse(wrappedWriter, fmt.Errorf("получение списка контактов: %w", err).Error(), http.StatusInternalServerError)
+			}
 			app.Logger.Infof("%s: получение списка контактов: %v", prompt, err)
-			web.ErrorResponse(wrappedWriter, fmt.Errorf("получение списка контактов: %w", err).Error(), http.StatusInternalServerError)
 			return
 		}
 
@@ -610,7 +640,7 @@ func ListEntrepreneurContacts(app *app.App) http.HandlerFunc {
 			contactsTransport[i] = web.ToContactTransport(contact)
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, web.ContactsResponse{EntrepreneurId: entUuid, Contacts: contactsTransport})
+		web.SuccessResponse(wrappedWriter, http.StatusOK, ContactsResponse{EntrepreneurId: entUuid, Contacts: contactsTransport})
 	}
 }
 
@@ -621,7 +651,7 @@ func ListEntrepreneurContacts(app *app.App) http.HandlerFunc {
 //	@Produce json
 //	@Tags			activityFields
 //	@Param data body web.ActivityField true "Activity Field data"
-//	@Success		200	{object} web.SuccessResponseStruct
+//	@Success		204	{object} web.SuccessResponseStruct
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure		403
@@ -656,7 +686,7 @@ func CreateActivityField(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, nil)
+		web.SuccessResponse(wrappedWriter, http.StatusNoContent, nil)
 	}
 }
 
@@ -667,13 +697,13 @@ func CreateActivityField(app *app.App) http.HandlerFunc {
 //	@Produce json
 //	@Tags			activityFields
 //	@Param id path string true "Activity Field`s id"
-//	@Success		200	{object} web.SuccessResponseStruct
+//	@Success		204	{object} web.SuccessResponseStruct
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure		403
 //	@Failure 		500 {object} web.ErrorResponseStruct
 //	@Security		BearerAuth
-//	@Router			/activity_fields [delete]
+//	@Router			/activity_fields/{id} [delete]
 func DeleteActivityField(app *app.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		prompt := "DeleteActivityFieldHandler"
@@ -706,7 +736,7 @@ func DeleteActivityField(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, nil)
+		web.SuccessResponse(wrappedWriter, http.StatusNoContent, nil)
 	}
 }
 
@@ -718,13 +748,13 @@ func DeleteActivityField(app *app.App) http.HandlerFunc {
 //	@Tags			activityFields
 //	@Param id path string true "Activity Field id"
 //	@Param data body web.ActivityField true "Activity Field data"
-//	@Success		200	{object} web.SuccessResponseStruct
+//	@Success		204	{object} web.SuccessResponseStruct
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure		403
 //	@Failure 		500 {object} web.ErrorResponseStruct
 //	@Security		BearerAuth
-//	@Router			/activity_fields [patch]
+//	@Router			/activity_fields/{id} [patch]
 func UpdateActivityField(app *app.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		prompt := "UpdateActivityFieldHandler"
@@ -770,7 +800,7 @@ func UpdateActivityField(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, nil)
+		web.SuccessResponse(wrappedWriter, http.StatusNoContent, nil)
 	}
 }
 
@@ -781,9 +811,10 @@ func UpdateActivityField(app *app.App) http.HandlerFunc {
 //	@Produce json
 //	@Tags			activityFields
 //	@Param id path string true "Activity field`s id"
-//	@Success		200	{object} web.ActFieldResponse
+//	@Success		200	{object} ActFieldResponse
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
+//	@Failure		404
 //	@Failure 		500 {object} web.ErrorResponseStruct
 //	@Security		BearerAuth
 //	@Router			/activity_fields/{id} [get]
@@ -814,12 +845,16 @@ func GetActivityField(app *app.App) http.HandlerFunc {
 
 		actField, err := app.ActFieldSvc.GetById(r.Context(), idUuid)
 		if err != nil {
+			if errors.Is(err, errs.ErrNotFound) {
+				web.ErrorResponse(wrappedWriter, fmt.Errorf("получение сферы деятельности по id: %w", err).Error(), http.StatusNotFound)
+			} else {
+				web.ErrorResponse(wrappedWriter, fmt.Errorf("получение сферы деятельности по id: %w", err).Error(), http.StatusInternalServerError)
+			}
 			app.Logger.Infof("%s: получение сферы деятельности по id: %v", prompt, err)
-			web.ErrorResponse(wrappedWriter, fmt.Errorf("получение сферы деятельности по id: %w", err).Error(), http.StatusInternalServerError)
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, web.ActFieldResponse{ActField: web.ToActFieldTransport(actField)})
+		web.SuccessResponse(wrappedWriter, http.StatusOK, ActFieldResponse{ActField: web.ToActFieldTransport(actField)})
 	}
 }
 
@@ -830,7 +865,7 @@ func GetActivityField(app *app.App) http.HandlerFunc {
 //	@Produce json
 //	@Tags			activityFields
 //	@Param page query int true "Page number"
-//	@Success		200	{object} web.ActFieldsResponse
+//	@Success		200	{object} ActFieldsResponse
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure 		500 {object} web.ErrorResponseStruct
@@ -875,7 +910,7 @@ func ListActivityFields(app *app.App) http.HandlerFunc {
 			actFieldsTransport[i] = web.ToActFieldTransport(actField)
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, web.ActFieldsResponse{Pages: numPages, ActFields: actFieldsTransport})
+		web.SuccessResponse(wrappedWriter, http.StatusOK, ActFieldsResponse{Pages: numPages, ActFields: actFieldsTransport})
 	}
 }
 
@@ -886,7 +921,7 @@ func ListActivityFields(app *app.App) http.HandlerFunc {
 //	@Produce json
 //	@Tags			companies
 //	@Param data body web.Company true "Company data"
-//	@Success		200	{object} web.SuccessResponseStruct
+//	@Success		204	{object} web.SuccessResponseStruct
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure 		500 {object} web.ErrorResponseStruct
@@ -935,7 +970,7 @@ func CreateCompany(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, nil)
+		web.SuccessResponse(wrappedWriter, http.StatusNoContent, nil)
 	}
 }
 
@@ -946,12 +981,12 @@ func CreateCompany(app *app.App) http.HandlerFunc {
 //	@Produce json
 //	@Tags			companies
 //	@Param id path string true "Company`s id"
-//	@Success		200	{object} web.SuccessResponseStruct
+//	@Success		204	{object} web.SuccessResponseStruct
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure 		500 {object} web.ErrorResponseStruct
 //	@Security		BearerAuth
-//	@Router			/companies [delete]
+//	@Router			/companies/{id} [delete]
 func DeleteCompany(app *app.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		prompt := "DeleteCompanyHandler"
@@ -998,7 +1033,7 @@ func DeleteCompany(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, nil)
+		web.SuccessResponse(wrappedWriter, http.StatusNoContent, nil)
 	}
 }
 
@@ -1010,12 +1045,12 @@ func DeleteCompany(app *app.App) http.HandlerFunc {
 //	@Tags			companies
 //	@Param id path string true "Company id"
 //	@Param data body web.Company true "Company data"
-//	@Success		200	{object} web.SuccessResponseStruct
+//	@Success		204	{object} web.SuccessResponseStruct
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure 		500 {object} web.ErrorResponseStruct
 //	@Security		BearerAuth
-//	@Router			/companies [patch]
+//	@Router			/companies/{id} [patch]
 func UpdateCompany(app *app.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		prompt := "UpdateCompanyHandler"
@@ -1073,7 +1108,7 @@ func UpdateCompany(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, nil)
+		web.SuccessResponse(wrappedWriter, http.StatusNoContent, nil)
 	}
 }
 
@@ -1084,12 +1119,13 @@ func UpdateCompany(app *app.App) http.HandlerFunc {
 //	@Produce json
 //	@Tags			companies
 //	@Param id path string true "Company`s id"
-//	@Success		200	{object} web.CompanyResponse
+//	@Success		200	{object} CompanyResponse
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
+//	@Failure		404
 //	@Failure 		500 {object} web.ErrorResponseStruct
 //	@Security		BearerAuth
-//	@Router			/companies [get]
+//	@Router			/companies/{id} [get]
 func GetCompany(app *app.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		prompt := "GetCompanyHandler"
@@ -1117,12 +1153,16 @@ func GetCompany(app *app.App) http.HandlerFunc {
 
 		company, err := app.CompSvc.GetById(r.Context(), idUuid)
 		if err != nil {
+			if errors.Is(err, errs.ErrNotFound) {
+				web.ErrorResponse(wrappedWriter, fmt.Errorf("получение компании по id: %w", err).Error(), http.StatusNotFound)
+			} else {
+				web.ErrorResponse(wrappedWriter, fmt.Errorf("получение компании по id: %w", err).Error(), http.StatusInternalServerError)
+			}
 			app.Logger.Infof("%s: получение компании по id: %v", prompt, err)
-			web.ErrorResponse(wrappedWriter, fmt.Errorf("получение компании по id: %w", err).Error(), http.StatusInternalServerError)
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, web.CompanyResponse{Company: web.ToCompanyTransport(company)})
+		web.SuccessResponse(wrappedWriter, http.StatusOK, CompanyResponse{Company: web.ToCompanyTransport(company)})
 	}
 }
 
@@ -1133,8 +1173,8 @@ func GetCompany(app *app.App) http.HandlerFunc {
 //	@Produce json
 //	@Tags			companies
 //	@Param page query int true "Page number"
-//	@Param entrepreneur-id query int true "Entrepreneur ID"
-//	@Success		200	{object} web.CompaniesResponse
+//	@Param id path string true "Entrepreneur ID"
+//	@Success		200	{object} CompaniesResponse
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure 		500 {object} web.ErrorResponseStruct
@@ -1165,7 +1205,8 @@ func ListEntrepreneurCompanies(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		entId := r.URL.Query().Get("entrepreneur-id")
+		//entId := r.URL.Query().Get("id")
+		entId := chi.URLParam(r, "id")
 		if page == "" {
 			app.Logger.Infof("%s: пустой id предпринимателя", prompt)
 			web.ErrorResponse(wrappedWriter, fmt.Errorf("пустой id предпринимателя").Error(), http.StatusBadRequest)
@@ -1191,7 +1232,7 @@ func ListEntrepreneurCompanies(app *app.App) http.HandlerFunc {
 			companiesTransport[i] = web.ToCompanyTransport(company)
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, web.CompaniesResponse{Pages: numPages, EntrepreneurId: entUuid, Companies: companiesTransport})
+		web.SuccessResponse(wrappedWriter, http.StatusOK, CompaniesResponse{Pages: numPages, EntrepreneurId: entUuid, Companies: companiesTransport})
 	}
 }
 
@@ -1203,7 +1244,7 @@ func ListEntrepreneurCompanies(app *app.App) http.HandlerFunc {
 //	@Tags			financialsReports
 //	@Param data body web.FinancialReport true "Financial Report data"
 //	@Param id path string true "Company ID"
-//	@Success		200	{object} web.SuccessResponseStruct
+//	@Success		204	{object} web.SuccessResponseStruct
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure 		500 {object} web.ErrorResponseStruct
@@ -1279,7 +1320,7 @@ func CreateReport(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, nil)
+		web.SuccessResponse(wrappedWriter, http.StatusNoContent, nil)
 	}
 }
 
@@ -1290,12 +1331,12 @@ func CreateReport(app *app.App) http.HandlerFunc {
 //	@Produce json
 //	@Tags			financialsReports
 //	@Param id path string true "Financial Report`s id"
-//	@Success		200	{object} web.SuccessResponseStruct
+//	@Success		204	{object} web.SuccessResponseStruct
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure 		500 {object} web.ErrorResponseStruct
 //	@Security		BearerAuth
-//	@Router			/financials [delete]
+//	@Router			/financials/{id} [delete]
 func DeleteFinReport(app *app.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		prompt := "DeleteFinReportHandler"
@@ -1342,7 +1383,7 @@ func DeleteFinReport(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, nil)
+		web.SuccessResponse(wrappedWriter, http.StatusNoContent, nil)
 	}
 }
 
@@ -1354,12 +1395,12 @@ func DeleteFinReport(app *app.App) http.HandlerFunc {
 //	@Tags			financialsReports
 //	@Param id path string true "Financial Report id"
 //	@Param data body web.FinancialReport true "Financial Report data"
-//	@Success		200	{object} web.SuccessResponseStruct
+//	@Success		204	{object} web.SuccessResponseStruct
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure 		500 {object} web.ErrorResponseStruct
 //	@Security		BearerAuth
-//	@Router			/financials [patch]
+//	@Router			/financials/{id} [patch]
 func UpdateFinReport(app *app.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		prompt := "UpdateFinReportHandler"
@@ -1417,7 +1458,7 @@ func UpdateFinReport(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, nil)
+		web.SuccessResponse(wrappedWriter, http.StatusNoContent, nil)
 	}
 }
 
@@ -1475,12 +1516,12 @@ func UpdateFinReport(app *app.App) http.HandlerFunc {
 //	@ID				getCompaniesReports
 //	@Produce json
 //	@Tags			companies
-//	@Param entrepreneur-id query int true "Company ID"
+//	@Param id path string true "Company ID"
 //	@Param start-year query int true "Start year"
 //	@Param start-quarter query int true "Start quarter"
 //	@Param end-year query int true "End year"
 //	@Param end-quarter query int true "End quarter"
-//	@Success		200	{object} web.FinReportByPeriodResponse
+//	@Success		200	{object} FinReportByPeriodResponse
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure 		500 {object} web.ErrorResponseStruct
@@ -1524,7 +1565,7 @@ func ListCompanyReports(app *app.App) http.HandlerFunc {
 		}
 
 		web.SuccessResponse(wrappedWriter, http.StatusOK,
-			web.FinReportByPeriodResponse{
+			FinReportByPeriodResponse{
 				CompanyId: compIdUuid,
 				Period:    web.ToPeriodTransport(period),
 				Revenue:   reports.Revenue(),
@@ -1538,12 +1579,12 @@ func ListCompanyReports(app *app.App) http.HandlerFunc {
 
 // CalculateRating godoc
 //
-//	@Summary		Получение финансовых отчетов компании
+//	@Summary		Получение финансовых отчетов предпринимателя
 //	@ID				calculateRating
 //	@Produce json
 //	@Tags			entrepreneurs
-//	@Param id path int true "Entrepreneur ID"
-//	@Success		200	{object} web.RatingResponse
+//	@Param id path string true "Entrepreneur ID"
+//	@Success		200	{object} RatingResponse
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure 		500 {object} web.ErrorResponseStruct
@@ -1581,7 +1622,7 @@ func CalculateRating(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, web.RatingResponse{Rating: rating})
+		web.SuccessResponse(wrappedWriter, http.StatusOK, RatingResponse{Rating: rating})
 	}
 }
 
@@ -1592,7 +1633,7 @@ func CalculateRating(app *app.App) http.HandlerFunc {
 //	@Produce json
 //	@Tags			financialsReports
 //	@Param entrepreneur-id query string true "Entrepreneur`s id"
-//	@Success		200	{object} web.EntrepreneurReportResponse
+//	@Success		200	{object} EntrepreneurReportResponse
 //	@Failure		400	{object} web.ErrorResponseStruct
 //	@Failure		401
 //	@Failure 		500 {object} web.ErrorResponseStruct
@@ -1638,7 +1679,7 @@ func GetEntrepreneurFinancials(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		web.SuccessResponse(wrappedWriter, http.StatusOK, web.EntrepreneurReportResponse{
+		web.SuccessResponse(wrappedWriter, http.StatusOK, EntrepreneurReportResponse{
 			Revenue: rep.Revenue(),
 			Costs:   rep.Costs(),
 			Profit:  rep.Profit(),
