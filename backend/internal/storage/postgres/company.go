@@ -2,9 +2,11 @@ package postgres
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"ppo/domain"
 	"ppo/internal/config"
+	"ppo/pkg/errs"
 	"strings"
 
 	"github.com/google/uuid"
@@ -55,7 +57,9 @@ func (r *CompanyRepository) GetById(ctx context.Context, id uuid.UUID) (company 
 		&company.Name,
 		&company.City,
 	)
-	if err != nil {
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, errs.ErrNotFound
+	} else if err != nil {
 		return nil, fmt.Errorf("получение компании по id: %w", err)
 	}
 	company.ID = id

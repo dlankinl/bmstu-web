@@ -9,6 +9,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"math"
 	"ppo/domain"
+	"ppo/pkg/errs"
 	"strings"
 )
 
@@ -57,7 +58,9 @@ func (r *FinReportRepository) GetById(ctx context.Context, id uuid.UUID) (report
 		&report.Year,
 		&report.Quarter,
 	)
-	if err != nil {
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, errs.ErrNotFound
+	} else if err != nil {
 		return nil, fmt.Errorf("получение отчета по id: %w", err)
 	}
 

@@ -2,10 +2,12 @@ package postgres
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"math"
 	"ppo/domain"
 	"ppo/internal/config"
+	"ppo/pkg/errs"
 	"strings"
 
 	"github.com/google/uuid"
@@ -106,7 +108,9 @@ func (r *ActivityFieldRepository) GetById(ctx context.Context, id uuid.UUID) (fi
 		&field.Description,
 		&field.Cost,
 	)
-	if err != nil {
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, errs.ErrNotFound
+	} else if err != nil {
 		return nil, fmt.Errorf("получение сферы деятельности по id: %w", err)
 	}
 
