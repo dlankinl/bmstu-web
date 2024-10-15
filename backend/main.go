@@ -3,7 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
+	"github.com/go-chi/jwtauth/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 	"log"
 	"net/http"
 	"os"
@@ -12,12 +18,6 @@ import (
 	"ppo/internal/config"
 	loggerPackage "ppo/pkg/logger"
 	"ppo/web"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/cors"
-	"github.com/go-chi/jwtauth/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 var tokenAuth *jwtauth.JWTAuth
@@ -39,6 +39,24 @@ func newConn(ctx context.Context, cfg *config.Database) (pool *pgxpool.Pool, err
 	return pool, nil
 }
 
+// @title Cервис поиска партнеров-предпринимателей
+// @version 1.0
+// @description Сервис призван помочь с поиском партнеров по бизнесу.
+
+// @contact.name Dmitry Lankin
+// @contact.url @lankind
+// @contact.email lankindl@student.bmstu.ru
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:8081
+// @BasePath /api/v1
+// @query.collection.format multi
+
+// @securityDefinitions.apikey	BearerAuth
+// @in							header
+// @name						Authorization
 func main() {
 	cfg, err := config.ReadConfig()
 	if err != nil {
@@ -84,12 +102,17 @@ func main() {
 	}))
 
 	mux.Use(middleware.Logger)
+	//mux.Get("/swagger/*any", httpSwagger.Handler(
+	//	httpSwagger.URL("http://localhost:8081/swagger/docs.json"),
+	//))
+	//mux.Mount("/swagger", httpSwagger.WrapHandler)
 
-	mux.Route("/api/v1", func(rOuter chi.Router) {
-		rOuter.Route("/entrepreneurs", func(r chi.Router) {
+	mux.Route("/api/v1", func(v1 chi.Router) {
+		v1.Route("/entrepreneurs", func(r chi.Router) {
 			r.Get("/{id}", web.GetEntrepreneur(a))
 			r.Get("/", web.ListEntrepreneurs(a))
 			r.Get("/{id}/rating", web.CalculateRating(a))
+			r.Get("/companies", web.ListEntrepreneurCompanies(a))
 
 			r.Group(func(r chi.Router) {
 				r.Use(jwtauth.Verifier(tokenAuth))
@@ -101,7 +124,7 @@ func main() {
 			})
 		})
 
-		rOuter.Route("/contacts", func(r chi.Router) {
+		v1.Route("/contacts", func(r chi.Router) {
 			r.Group(func(r chi.Router) {
 				r.Use(jwtauth.Verifier(tokenAuth))
 				r.Use(jwtauth.Authenticator(tokenAuth))
@@ -115,7 +138,7 @@ func main() {
 			})
 		})
 
-		rOuter.Route("/activity_fields", func(r chi.Router) {
+		v1.Route("/activity_fields", func(r chi.Router) {
 			r.Get("/{id}", web.GetActivityField(a))
 			r.Get("/", web.ListActivityFields(a))
 
@@ -130,9 +153,8 @@ func main() {
 			})
 		})
 
-		rOuter.Route("/companies", func(r chi.Router) {
+		v1.Route("/companies", func(r chi.Router) {
 			r.Get("/{id}", web.GetCompany(a))
-			r.Get("/", web.ListEntrepreneurCompanies(a))
 
 			r.Group(func(r chi.Router) {
 				r.Use(jwtauth.Verifier(tokenAuth))
@@ -154,7 +176,7 @@ func main() {
 			})
 		})
 
-		rOuter.Route("/financials", func(r chi.Router) {
+		v1.Route("/financials", func(r chi.Router) {
 			r.Group(func(r chi.Router) {
 				r.Use(jwtauth.Verifier(tokenAuth))
 				r.Use(jwtauth.Authenticator(tokenAuth))
@@ -166,10 +188,11 @@ func main() {
 			})
 		})
 
-		rOuter.Post("/login", web.LoginHandler(a))
-		rOuter.Post("/signup", web.RegisterHandler(a))
+		v1.Post("/login", web.LoginHandler(a))
+		v1.Post("/signup", web.RegisterHandler(a))
 	})
 
+	mux.Mount("/swagger", httpSwagger.WrapHandler)
 	go func() {
 		metricsAddress := fmt.Sprintf("%s:%s", cfg.Server.MetricsHost, cfg.Server.MetricsPort)
 
