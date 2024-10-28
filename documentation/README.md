@@ -67,11 +67,11 @@
 
 ## Use-Case диаграмма
 
-![alt text](diagrams/usecase.svg "Use-Case диаграмма")
+![alt text](../diagrams/usecase.svg "Use-Case диаграмма")
 
 ## ER-диаграмма
 
-![alt text](diagrams/er.svg "ER-диаграмма")
+![alt text](../diagrams/er.svg "ER-диаграмма")
 
 
 ## Пользовательские сценарии
@@ -106,11 +106,11 @@
 
 ## Формализация ключевых бизнес-процессов
 
-![alt text](diagrams/guest.png "BMPN гостя")
+![alt text](../diagrams/guest.png "BMPN гостя")
 
-![alt text](diagrams/entrepreneur.png "BPMN предпринимателя")
+![alt text](../diagrams/entrepreneur.png "BPMN предпринимателя")
 
-![alt text](diagrams/admin.png "BPMN администратора")
+![alt text](../diagrams/admin.png "BPMN администратора")
 
 ## Тип приложения
 
@@ -124,7 +124,7 @@ Web SPA
 
 ## Верхнеуровневое разбиение на компоненты
 
-![alt text](diagrams/components.svg "Верхнеуровневое разбиение на компоненты")
+![alt text](../diagrams/components.svg "Верхнеуровневое разбиение на компоненты")
 
 ## Макет
 
