@@ -129,3 +129,85 @@ Web SPA
 ## Макет
 
 Макет можно посмотреть [тут](https://www.figma.com/design/aea9eC2gIJPy7a05TspmWu/Untitled?node-id=0-1&node-type=canvas&t=FufmNMJPrnElPnZX-0). 
+
+## Бенчмарк
+
+### Без балансировки нагрузки
+
+Server Software:        
+Server Hostname:        127.0.0.1
+Server Port:            8085
+
+Document Path:          /api/v2/activity_fields?page=1
+Document Length:        327 bytes
+
+Concurrency Level:      100
+Time taken for tests:   0.631 seconds
+Complete requests:      5000
+Failed requests:        0
+Total transferred:      2250000 bytes
+HTML transferred:       1635000 bytes
+Requests per second:    7927.60 [#/sec] (mean)
+Time per request:       12.614 [ms] (mean)
+Time per request:       0.126 [ms] (mean, across all concurrent requests)
+Transfer rate:          3483.81 [Kbytes/sec] received
+
+Connection Times (ms)
+min  mean[+/-sd] median   max
+Connect:        0    1   0.9      0       4
+Processing:     3   12   7.8     10      81
+Waiting:        3   11   7.8     10      81
+Total:          4   12   7.9     11      83
+WARNING: The median and mean for the initial connection time are not within a normal deviation
+These results are probably not that reliable.
+
+Percentage of the requests served within a certain time (ms)
+50%     11
+66%     13
+75%     14
+80%     15
+90%     18
+95%     19
+98%     36
+99%     63
+100%     83 (longest request)
+
+### С балансировкой нагрузки
+
+Server Software:        nginx
+Server Hostname:        127.0.0.1
+Server Port:            80
+
+Document Path:          /api/v2/activity_fields?page=1
+Document Length:        325 bytes
+
+Concurrency Level:      100
+Time taken for tests:   1.316 seconds
+Complete requests:      5000
+Failed requests:        0
+Total transferred:      2595000 bytes
+HTML transferred:       1625000 bytes
+Requests per second:    3799.01 [#/sec] (mean)
+Time per request:       26.323 [ms] (mean)
+Time per request:       0.263 [ms] (mean, across all concurrent requests)
+Transfer rate:          1925.47 [Kbytes/sec] received
+
+Connection Times (ms)
+min  mean[+/-sd] median   max
+Connect:        0    1   1.0      0       5
+Processing:     6   25  21.9     19     160
+Waiting:        4   25  21.9     18     159
+Total:          6   26  21.9     19     160
+WARNING: The median and mean for the initial connection time are not within a normal deviation
+These results are probably not that reliable.
+
+Percentage of the requests served within a certain time (ms)
+50%     19
+66%     23
+75%     28
+80%     32
+90%     44
+95%     68
+98%    123
+99%    137
+100%    160 (longest request)
