@@ -89,13 +89,3 @@ alter table ppo.reviews add constraint chk_rating check ( rating >= 1 and rating
 
 insert into ppo.users(username, password, role)
 values ('admin', '$2a$10$4MYWtRfOlgU9smD01vZCFel4WmfsXc2RHuQm6Wq.uUezTeYb3HrNm', 'admin');
-
-
-create user user_accountant;
-grant accountant to user_accountant;
-
-create user user_admin;
-grant admin to user_admin;
-
-create user user_editor;
-grant editor to user_editor;

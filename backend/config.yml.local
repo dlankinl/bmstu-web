@@ -11,7 +11,7 @@ database:
   db_password: postgres
   db_driver: postgres
   db_host: localhost
-  db_port: 5441
+  db_port: 5545
 
 logger:
   level: info
