@@ -2,8 +2,14 @@ import React, { useEffect, useState } from 'react';
 import ListComponent from '../List/List';
 import ActivityFieldItem from './ActivityFieldItem';
 import { ActivityField } from './types';
+import ListContainer from '../List/ListContainer';
+import CustomModal from '../CustomModal/CustomModal';
 
-const ActivityFieldsList: React.FC = () => {
+interface ActivityFieldsListProps {
+  isAdmin: boolean;
+}
+
+const ActivityFieldsList: React.FC<ActivityFieldsListProps> = ({ isAdmin }) => {
   const [activityFields, setActivityFields] = useState<ActivityField[]>([]);
 
   useEffect(() => {
@@ -22,14 +28,40 @@ const ActivityFieldsList: React.FC = () => {
     fetchActivityFields();
   }, []);
 
+  const handleAddClick = () => {
+    console.log("Add button clicked");
+  };
+
   return (
-    <ListComponent
-      data={activityFields}
-      renderItem={(activityField) => (
-        <ActivityFieldItem key={activityField.ID} activityField={activityField} />
+    <ListContainer>
+      <div style={{ position: 'relative' }}>
+      {isAdmin && (
+        <button 
+          onClick={handleAddClick} 
+          style={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            backgroundColor: 'green',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            padding: '10px 20px',
+            cursor: 'pointer'
+          }}
+        >
+          Add
+        </button>
       )}
-      itemsPerPage={3}
-    />
+        <ListComponent
+          data={activityFields}
+          renderItem={(activityField) => (
+            <ActivityFieldItem key={activityField.ID} activityField={activityField} />
+          )}
+          itemsPerPage={3}
+        />
+      </div>
+    </ListContainer>
   );
 };
 
