@@ -1,17 +1,17 @@
 import React from 'react';
-import { Company } from './types';
+import { ActivityField } from './types';
 import ListItem from '../List/Item';
 
-const CompanyItem: React.FC<{ company: Company }> = ({ company }) => {
+const ActivityFieldItem: React.FC<{ activityField: ActivityField }> = ({ activityField }) => {
   return (
     <ListItem
-      item={company}
+      item={activityField}
       renderContent={(item) => (
         <>
           <div className="item-details">
             <div className="item-info">
               <h3>{item.Name}</h3>
-              <p>{item.City}</p>
+              <p>{item.Cost}</p>
             </div>
             <p className="item-description">{item.Description}</p>
           </div>
@@ -21,4 +21,4 @@ const CompanyItem: React.FC<{ company: Company }> = ({ company }) => {
   );
 };
 
-export default CompanyItem;
+export default ActivityFieldItem;

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
-// import CompanyList from './components/Companies/CompanyList';
 import CompaniesList from './components/Companies/CompaniesList'
+import ActivityFieldsList from './components/ActivityFields/ActivityFieldsList';
 import './App.css'
 
 function App() {
@@ -10,8 +10,8 @@ function App() {
 
   return (
     <div className="App">
-      {/* <CompanyList /> */}
-      <CompaniesList />
+      {/* <CompaniesList /> */}
+      <ActivityFieldsList />
     </div>
   );
 }

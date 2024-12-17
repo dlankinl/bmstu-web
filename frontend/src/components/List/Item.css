@@ -12,17 +12,17 @@
   flex-direction: column;
 }
 
-.company-details {
+.item-details {
   display: flex; /* Flexbox for details layout */
   justify-content: space-between; /* Space between info and description */
   width: 100%; /* Full width for details */
 }
 
-.company-info {
+.item-info {
   display: flex; /* Flexbox for name and city */
   flex-direction: column; /* Stack name and city vertically */
 }
 
-.company-description {
+.item-description {
   color: #555; /* Lighter color for description text */
 }
