@@ -6,6 +6,8 @@
 
 .items {
   width: 100%; /* Full width for items */
+  flex-direction: column;
+  align-items: center;
 }
 
 .pagination {

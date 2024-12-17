@@ -1,0 +1,17 @@
+.list-container {
+  width: 100%;
+  
+  background-color: #f0f0f0;
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow effect */
+  
+  display: flex; /* Use flexbox for layout */
+  flex-direction: column; /* Stack children vertically */
+  
+  overflow-y: auto; /* Enable vertical scrolling if content overflows */
+  
+  padding: 16px; /* Padding inside the container */
+
+  justify-content: center; /* Center items vertically */
+  align-items: center; /* Center items horizontally */
+}

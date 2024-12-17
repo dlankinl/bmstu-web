@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
-import CompaniesList from './components/Companies/CompaniesList'
+import ListContainer from './components/List/ListContainer';
 import ActivityFieldsList from './components/ActivityFields/ActivityFieldsList';
 import './App.css'
 
@@ -10,8 +10,9 @@ function App() {
 
   return (
     <div className="App">
-      {/* <CompaniesList /> */}
-      <ActivityFieldsList />
+      <ListContainer>
+        <ActivityFieldsList />
+      </ListContainer>
     </div>
   );
 }
