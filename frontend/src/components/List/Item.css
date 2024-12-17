@@ -1,0 +1,28 @@
+.list-item {
+  background-color: white;
+  border-radius: 8px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+  padding: 16px;
+  margin: 16px; 
+  
+  height: 110px; 
+  width: 770px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.company-details {
+  display: flex; /* Flexbox for details layout */
+  justify-content: space-between; /* Space between info and description */
+  width: 100%; /* Full width for details */
+}
+
+.company-info {
+  display: flex; /* Flexbox for name and city */
+  flex-direction: column; /* Stack name and city vertically */
+}
+
+.company-description {
+  color: #555; /* Lighter color for description text */
+}

@@ -1,0 +1,43 @@
+.pagination {
+  display: flex;
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center pagination horizontally */
+  margin-top: 20px; /* Add some space above the pagination */
+}
+
+.arrow-button {
+  background-color: transparent; /* No background */
+  border: none; /* No border */
+  color: black; /* Arrow color */
+  font-size: 20px; /* Adjust size as needed */
+  cursor: pointer; /* Pointer cursor */
+}
+
+.arrow-button.disabled {
+  color: gray; /* Gray color when disabled */
+  cursor: not-allowed; /* Change cursor to indicate it's not clickable */
+}
+
+.page-numbers {
+  display: flex;
+  gap: 10px; /* Space between page numbers */
+}
+
+.page-item {
+  background-color: transparent; /* No background for non-active pages */
+  color: black; /* Black text color */
+  border: none; /* No border */
+  cursor: pointer; /* Pointer cursor */
+  
+  display: flex; /* Flexbox for centering text */
+  align-items: center; /* Center text vertically */
+  justify-content: center; /* Center text horizontally */
+  width: 30px; /* Fixed width for all page numbers */
+  height: 30px; /* Fixed height for all page numbers */
+}
+
+.page-item.active {
+  background-color: black; /* Black background for active page */
+  color: white; /* White text color for active page */
+  border-radius: 5px; /* Rounded corners for active page */
+}

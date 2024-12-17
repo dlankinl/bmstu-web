@@ -1,8 +1,8 @@
 export interface Company {
-  ID: number;
-  OwnerID: number;
+  ID: string;
+  OwnerID: string;
   Name: string;
   City: string;
   Description: string;
-  ActivityFieldID: number;
+  ActivityFieldID: string;
 }
