@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import FormContainer from './FormContainer';
+import GreenButton from '../Buttons/GreenButton';
 
 interface FieldConfig {
   name: string;
@@ -35,44 +37,47 @@ const Form: React.FC<FormProps> = ({ title, fields, onSubmit }) => {
   console.log("FIELDS", fields)
   
   return (
-    <div>
-      <h1>{title}</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {fields.map((field) => (
-          <div key={field.name} className="input-group">
-            <Controller
-              name={field.name}
-              control={control}
-              defaultValue=""
-              render={({ field }) => {
-                if (field.type === 'select') {
-                  return (
-                    <select {...field}>
-                      <option value="">{`Select ${field.placeholder}`}</option>
-                      {field.options.map(option => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  );
-                } else {
-                  console.log(field);
-                  return (
-                    <input
-                      {...field}
-                      type={field.type}
-                      placeholder={field.placeholder}
-                    />
-                  );
-                }
-              }}
-            />
-          </div>
-        ))}
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+    <FormContainer>
+      <div>
+        <h1>{title}</h1>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {fields.map((field) => (
+            <div key={field.name} className="input-group">
+              <Controller
+                name={field.name}
+                control={control}
+                defaultValue=""
+                render={({ field }) => {
+                  if (field.type === 'select') {
+                    return (
+                      <select {...field}>
+                        <option value="">{`Select ${field.placeholder}`}</option>
+                        {field.options.map(option => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    );
+                  } else {
+                    console.log(field);
+                    return (
+                      <input
+                        {...field}
+                        type={field.type}
+                        placeholder={field.placeholder}
+                      />
+                    );
+                  }
+                }}
+              />
+            </div>
+          ))}
+          {/* <button type="submit">Submit</button> */}
+          <GreenButton text={"Добавить"} icon={""}/>
+        </form>
+      </div>
+    </FormContainer>
   );
 };
 

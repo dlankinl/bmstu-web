@@ -1,0 +1,20 @@
+.icon-button {
+    display: flex;
+    align-items: center;
+    background-color: #10B981; /* Button color */
+    color: #FFFFFF; /* Text color */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.icon-button:hover {
+    background-color: #0e9a6a; /* Darker shade on hover */
+}
+
+.icon-button .icon {
+    margin-right: 8px; /* Space between icon and text */
+}
