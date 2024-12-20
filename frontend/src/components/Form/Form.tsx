@@ -38,7 +38,7 @@ const Form: React.FC<FormProps> = ({ title, fields, onSubmit }) => {
                     if (field.type === 'select') {
                       return (
                           <select {...controllerField} className="select-field">
-                            <option value="" disabled hidden selected>{`${field.placeholder}`}</option>
+                            <option defaultValue={""} value="" disabled hidden>{`${field.placeholder}`}</option>
                             {(options[field.name] || []).map(option => (
                               <option key={option.value} value={option.value}>
                                 {option.label}

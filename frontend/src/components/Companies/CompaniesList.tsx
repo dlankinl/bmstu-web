@@ -3,9 +3,26 @@ import React, { useEffect, useState } from 'react';
 import ListComponent from '../List/List';
 import CompanyItem from './CompanyItem';
 import { Company } from './types';
+import ListContainer from '../List/ListContainer';
+import GreenButton from '../Buttons/GreenButton';
+import "./CompaniesList.css";
+import CustomModal from '../CustomModal/CustomModal';
+import CreateCompanyComponent from '../CreateCompany/CreateCompany';
 
 const CompaniesList: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+      setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+      setIsModalOpen(false);
+  };
+
   const [companies, setCompanies] = useState<Company[]>([]);
+
+  const isOwner = true;
 
   useEffect(() => {
     // Simulate fetching data
@@ -25,13 +42,26 @@ const CompaniesList: React.FC = () => {
   }, []);
 
   return (
-    <ListComponent
-      data={companies}
-      renderItem={(company) => (
-        <CompanyItem key={company.ID} company={company} />
-      )}
-      itemsPerPage={3}
-    />
+    <ListContainer>
+      <div style={{ position: 'relative' }}>
+        {isOwner && (
+          <div className="button-container">
+            <GreenButton text={"Добавить"} icon={""} onClick={openModal}/>
+          </div>
+        )}
+        <ListComponent
+          data={companies}
+          renderItem={(company) => (
+            <CompanyItem key={company.ID} company={company} />
+          )}
+          itemsPerPage={3}
+        />
+
+        <CustomModal isOpen={isModalOpen} onRequestClose={closeModal}>
+          <CreateCompanyComponent/>
+        </CustomModal>
+      </div>
+    </ListContainer>
   );
 };
 
