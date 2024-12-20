@@ -4,6 +4,7 @@ import ActivityFieldItem from './ActivityFieldItem';
 import { ActivityField } from './types';
 import ListContainer from '../List/ListContainer';
 import CustomModal from '../CustomModal/CustomModal';
+import GreenButton from '../Buttons/GreenButton';
 
 interface ActivityFieldsListProps {
   isAdmin: boolean;
@@ -36,22 +37,7 @@ const ActivityFieldsList: React.FC<ActivityFieldsListProps> = ({ isAdmin }) => {
     <ListContainer>
       <div style={{ position: 'relative' }}>
       {isAdmin && (
-        <button 
-          onClick={handleAddClick} 
-          style={{
-            position: 'absolute',
-            top: '10px',
-            right: '10px',
-            backgroundColor: 'green',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            padding: '10px 20px',
-            cursor: 'pointer'
-          }}
-        >
-          Add
-        </button>
+        <GreenButton text={"Добавить"} icon={""}/>
       )}
         <ListComponent
           data={activityFields}
