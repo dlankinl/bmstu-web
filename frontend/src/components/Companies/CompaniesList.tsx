@@ -6,18 +6,17 @@ import { Company } from './types';
 import ListContainer from '../List/ListContainer';
 import GreenButton from '../Buttons/GreenButton';
 import "./CompaniesList.css";
-import CustomModal from '../CustomModal/CustomModal';
 import CreateCompanyComponent from '../CreateCompany/CreateCompany';
+import Modal from '../Modal/Modal';
 
 const CompaniesList: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalActive, setModalActive] = useState(false);
 
-  const openModal = () => {
-      setIsModalOpen(true);
+  const handleModalOpen = () => {
+    setModalActive(true);
   };
-
-  const closeModal = () => {
-      setIsModalOpen(false);
+  const handleModalClose = () => {
+    setModalActive(false);
   };
 
   const [companies, setCompanies] = useState<Company[]>([]);
@@ -46,7 +45,7 @@ const CompaniesList: React.FC = () => {
       <div style={{ position: 'relative' }}>
         {isOwner && (
           <div className="button-container">
-            <GreenButton text={"Добавить"} icon={""} onClick={openModal}/>
+            <GreenButton text={"Добавить"} icon={""} onClick={handleModalOpen}/>
           </div>
         )}
         <ListComponent
@@ -57,9 +56,13 @@ const CompaniesList: React.FC = () => {
           itemsPerPage={3}
         />
 
-        <CustomModal isOpen={isModalOpen} onRequestClose={closeModal}>
-          <CreateCompanyComponent/>
-        </CustomModal>
+        <div>
+          {isModalActive && (
+            <Modal onClose={handleModalClose}>
+              <CreateCompanyComponent/>
+            </Modal>
+          )}
+        </div>
       </div>
     </ListContainer>
   );

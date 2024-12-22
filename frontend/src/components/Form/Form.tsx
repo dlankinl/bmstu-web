@@ -5,9 +5,13 @@ import GreenButton from '../Buttons/GreenButton';
 import { FormProps, FieldConfig, Option } from './types';
 import './Form.css';
 
-const Form: React.FC<FormProps> = ({ title, fields, onSubmit }) => {
+const Form: React.FC<FormProps> = ({ title, fields, onSubmit, buttonText }) => {
   const { control, handleSubmit } = useForm();
   const [options, setOptions] = useState<{ [key: string]: Option[] }>({});
+
+  if (buttonText === "") {
+    buttonText = "Добавить"
+  }
 
   useEffect(() => {
     const fetchOptionsForFields = async () => {
@@ -26,7 +30,7 @@ const Form: React.FC<FormProps> = ({ title, fields, onSubmit }) => {
   return (
     <FormContainer>
       <div>
-        <h2>{title}</h2>
+        <h2 className="form-title">{title}</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           {fields.map((field) => (
             <div key={field.name} className="input-group">
@@ -60,7 +64,7 @@ const Form: React.FC<FormProps> = ({ title, fields, onSubmit }) => {
                 />
             </div>
           ))}
-          <GreenButton text={"Добавить"} icon={""} />
+          <GreenButton text={buttonText} icon={""} />
         </form>
       </div>
     </FormContainer>

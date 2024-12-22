@@ -23,3 +23,14 @@ export const activityFieldFields = [
   { name: 'description', type: 'text', placeholder: 'Описание' },
   { name: 'cost', type: 'text', placeholder: 'Вес' },
 ];
+
+export const signupFields = [
+  { name: 'username', type: 'text', placeholder: 'Имя пользователя' },
+  { name: 'password', type: 'password', placeholder: 'Пароль' },
+  { name: 'verifyPassword', type: 'password', placeholder: 'Подтверждение пароля' },
+]
+
+export const signinFields = [
+  { name: 'username', type: 'text', placeholder: 'Имя пользователя' },
+  { name: 'password', type: 'password', placeholder: 'Пароль' },
+]

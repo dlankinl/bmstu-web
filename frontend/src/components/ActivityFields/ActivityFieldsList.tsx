@@ -3,8 +3,10 @@ import ListComponent from '../List/List';
 import ActivityFieldItem from './ActivityFieldItem';
 import { ActivityField } from './types';
 import ListContainer from '../List/ListContainer';
-import CustomModal from '../CustomModal/CustomModal';
 import GreenButton from '../Buttons/GreenButton';
+import Modal from '../Modal/Modal';
+import "./AcitivityFieldsList.css";
+import CreateActivityFieldComponent from '../CreateActivityField/CreateActivityField';
 
 interface ActivityFieldsListProps {
   isAdmin: boolean;
@@ -12,6 +14,14 @@ interface ActivityFieldsListProps {
 
 const ActivityFieldsList: React.FC<ActivityFieldsListProps> = ({ isAdmin }) => {
   const [activityFields, setActivityFields] = useState<ActivityField[]>([]);
+  const [isModalActive, setModalActive] = useState(false);
+  
+  const handleModalOpen = () => {
+    setModalActive(true);
+  };
+  const handleModalClose = () => {
+    setModalActive(false);
+  };
 
   useEffect(() => {
     const fetchActivityFields = () => {
@@ -29,15 +39,13 @@ const ActivityFieldsList: React.FC<ActivityFieldsListProps> = ({ isAdmin }) => {
     fetchActivityFields();
   }, []);
 
-  const handleAddClick = () => {
-    console.log("Add button clicked");
-  };
-
   return (
     <ListContainer>
       <div style={{ position: 'relative' }}>
       {isAdmin && (
-        <GreenButton text={"Добавить"} icon={""}/>
+        <div className="button-container">
+          <GreenButton text={"Добавить"} icon={""} onClick={handleModalOpen}/>
+        </div>
       )}
         <ListComponent
           data={activityFields}
@@ -46,6 +54,13 @@ const ActivityFieldsList: React.FC<ActivityFieldsListProps> = ({ isAdmin }) => {
           )}
           itemsPerPage={3}
         />
+        <div>
+          {isModalActive && (
+            <Modal onClose={handleModalClose}>
+              <CreateActivityFieldComponent/>
+            </Modal>
+          )}
+        </div>
       </div>
     </ListContainer>
   );
