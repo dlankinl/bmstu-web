@@ -1,0 +1,44 @@
+/* Navbar.css */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: black;
+    padding: 10px 20px;
+    width: 100%;
+    position: fixed;
+    top: 0; 
+    left: 0; 
+    z-index: 1000;
+}
+
+.navbar-logo img {
+    height: 40px; /* Adjust as needed */
+}
+
+.navbar-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.nav-button, .auth-button {
+    color: white;
+    background-color: transparent;
+    border: none;
+    margin-left: 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.auth-button {
+    border: 1px solid white;
+    padding: 5px 10px;
+}
+
+body {
+    margin: 0;
+}
+
+.App {
+    padding-top: 60px;
+}

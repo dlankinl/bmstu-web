@@ -29,7 +29,7 @@ function App() {
           <Route path="/companies" element={<CompaniesList />} />
           {/* <Route path="/companies/create" element={<Form title="Создать компанию" fields={companyFields} onSubmit={handleSubmit} />} /> */}
           <Route path="/financials/:id" element={<FinancialReportComponent />} />
-          <Route path="/signup" element={<SignupComponent />} />
+          {/* <Route path="/signup" element={<SignupComponent />} /> */}
         </Routes>
       </div>
     </Router>

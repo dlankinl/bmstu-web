@@ -1,0 +1,23 @@
+.input-field,
+.select-field {
+    min-width: 271px;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 25px;
+}
+
+.input-field::placeholder {
+    color: #B3B3B3;
+    opacity: 1;
+}
+
+.select-field::placeholder {
+    color: #B3B3B3;
+}
+
+.form-title {
+    text-align: center;
+}
