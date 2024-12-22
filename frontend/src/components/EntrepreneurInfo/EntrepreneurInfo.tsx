@@ -9,6 +9,7 @@ import Modal from '../Modal/Modal';
 import FinancialReportComponent from '../FinancialReport/FinancialReport';
 import EditEntrepreneurComponent from '../EditEntrepreneur/EditEntrepreneur';
 import FinancialReportForm from '../FinancialReportForm/FinancialReportForm';
+import ContactsList from '../ContactsList/ContactsList';
 
 const EntrepreneurInfoComponent = ({ }) => {
   const { id } = useParams();
@@ -25,7 +26,7 @@ const EntrepreneurInfoComponent = ({ }) => {
   const handleModalClose = () => {
     setModalActive(false);
     setModalContent(null);
-};
+  };
 
   useEffect(() => {
     const fetchEntrepreneurInfo = () => {
@@ -48,7 +49,7 @@ const EntrepreneurInfoComponent = ({ }) => {
 
   const navigate = useNavigate(); // Initialize the navigate function
 
-  const handleButtonClick = () => {
+  const navigateToCompanies = () => {
     navigate(`/entrepreneurs/${values?.ID}/companies`);
   };
 
@@ -60,6 +61,7 @@ const EntrepreneurInfoComponent = ({ }) => {
     handleModalOpen(reportResults);
   };
 
+  // TODO: кнопка "Контакты" должна быть доступна только авторизованным пользователям
   return (
     <FormContainer>
       <div className="my-component">
@@ -92,10 +94,10 @@ const EntrepreneurInfoComponent = ({ }) => {
 
         <div className="button-row">
          <div className="button-wrapper">
-            <GreenButton text={"Компании"} icon={""} onClick={handleButtonClick}/>
+            <GreenButton text={"Компании"} icon={""} onClick={navigateToCompanies}/>
           </div>
           <div className="button-wrapper">
-            <GreenButton text={"Контакты"} icon={""} onClick={handleButtonClick}/>
+            <GreenButton text={"Контакты"} icon={""} onClick={() => { handleModalOpen(<ContactsList />) }}/>
           </div>
         </div>
       </div>

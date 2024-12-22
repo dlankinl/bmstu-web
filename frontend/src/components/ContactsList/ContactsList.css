@@ -1,0 +1,44 @@
+.my-component {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.row {
+  width: 392px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #000000;
+  padding: 5px 0px;
+}
+
+/* .button-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+}
+
+.button {
+  padding: 10px 15px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+
+.button-wrapper {
+  width: 194px;
+  padding: 2px 0;
+}
+
+.button-wrapper-center {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+} */
