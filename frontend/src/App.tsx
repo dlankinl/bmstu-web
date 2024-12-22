@@ -29,7 +29,7 @@ function App() {
           <Route path="/companies/:id" element={<CompanyInfoComponent />} />
           <Route path="/entrepreneurs/:id" element={<EntrepreneurInfoComponent />} />
           <Route path="/activity-fields" element={<ActivityFieldsList isAdmin={true} />} />
-          <Route path="/companies" element={<CompaniesList />} />
+          <Route path="/entrepreneurs/:id/companies" element={<CompaniesList />} />
           {/* <Route path="/companies/create" element={<Form title="Создать компанию" fields={companyFields} onSubmit={handleSubmit} />} /> */}
           <Route path="/financials/:id" element={<FinancialReportComponent />} />
           {/* <Route path="/signup" element={<SignupComponent />} /> */}

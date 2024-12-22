@@ -6,13 +6,23 @@ import GreenButton from '../Buttons/GreenButton';
 import FormContainer from '../Form/FormContainer';
 import { FinancialReport } from './types';
 
-const FinancialReportComponent = ({ }) => {
+interface FinancialReportParamsProps {
+  startYear: number;
+  startQuarter: number;
+  endYear: number;
+  endQuarter: number;
+  companyID: number | null;
+  entrepreneurID: number | null;
+}
+
+const FinancialReportComponent: React.FC<FinancialReportParamsProps> = ({ params }) => {
   const { id } = useParams();
   const [value, setValues] = useState<FinancialReport>();
 
   useEffect(() => {
     const fetchFinancialReport = () => {
-      const staticFinancialReport: FinancialReport = { ID: "1", CompanyID: "1", Revenue: 123, Costs: 23, Profit: 100, PeriodStart: "2024-02", PeriodEnd: "2024-04", CompanyName: "test1" };
+      const staticFinancialReport: FinancialReport = { ID: "1", CompanyID: "1", Revenue: 123, Costs: 23, Profit: 100, 
+        PeriodStart: `${params.startQuarter}Q ${params.startYear}`, PeriodEnd: `${params.endQuarter}Q ${params.endYear}`, CompanyName: "test1" };
       setValues(staticFinancialReport);
     };
 
@@ -29,11 +39,13 @@ const FinancialReportComponent = ({ }) => {
     fetchFinancialReport();
   }, [id]); 
 
+  const label = !params.companyID && params.entrepreneurID ? "ФИО" : "Объект";
+
   return (
     <FormContainer>
       <div className="my-component">
         <div className="row">
-          <span>Объект</span>
+          <span>{label}</span>
           <span>{value?.CompanyName}</span>
         </div>
         <div className="row">

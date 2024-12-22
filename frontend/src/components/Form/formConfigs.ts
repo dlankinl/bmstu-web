@@ -50,3 +50,10 @@ export const entrepreneurFields = [
   { name: 'birthday', type: 'text', placeholder: 'Дата рождения' },
   { name: 'city', type: 'text', placeholder: 'Город' },
 ];
+
+export const financialReportFormFields = [
+  { name: 'startYear', type: 'text', placeholder: 'Год начала периода' },
+  { name: 'startQuarter', type: 'text', placeholder: 'Квартал начала периода' },
+  { name: 'endYear', type: 'text', placeholder: 'Год конца периода' },
+  { name: 'endQuarter', type: 'text', placeholder: 'Квартал конца периода' },
+];

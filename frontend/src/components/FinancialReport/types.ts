@@ -6,5 +6,6 @@ export interface FinancialReport {
   Costs: number;
   PeriodStart: string;
   PeriodEnd: string;
-  CompanyName: string;
+  CompanyName: string | null;
+  EntrepreneurID: string | null;
 }

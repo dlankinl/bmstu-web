@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import './EntrepreneurInfo.css';
 import GreenButton from '../Buttons/GreenButton';
@@ -7,8 +7,8 @@ import FormContainer from '../Form/FormContainer';
 import { EntrepreneurInfo } from './types';
 import Modal from '../Modal/Modal';
 import FinancialReportComponent from '../FinancialReport/FinancialReport';
-import CreateFinancialReportComponent from '../CreateFinancialReport/CreateFinancialReport';
 import EditEntrepreneurComponent from '../EditEntrepreneur/EditEntrepreneur';
+import FinancialReportForm from '../FinancialReportForm/FinancialReportForm';
 
 const EntrepreneurInfoComponent = ({ }) => {
   const { id } = useParams();
@@ -46,6 +46,20 @@ const EntrepreneurInfoComponent = ({ }) => {
     fetchEntrepreneurInfo();
   }, [id]); 
 
+  const navigate = useNavigate(); // Initialize the navigate function
+
+  const handleButtonClick = () => {
+    navigate(`/entrepreneurs/${values?.ID}/companies`);
+  };
+
+  const handleFinancialReportSubmit = (data: { startYear: number; endYear: number; startQuarter: number; endQuarter: number }) => {
+    const reportResults = (
+      <FinancialReportComponent params={data} />
+    );
+
+    handleModalOpen(reportResults);
+  };
+
   return (
     <FormContainer>
       <div className="my-component">
@@ -72,12 +86,16 @@ const EntrepreneurInfoComponent = ({ }) => {
             />
           </div>
           <div className="button-wrapper">
-            <GreenButton text={"Финансовый отчет"} icon={""} onClick={() => { handleModalOpen(<FinancialReportComponent/>) }}/>
+            <GreenButton text={"Финансовый отчет"} icon={""} onClick={() => { handleModalOpen(<FinancialReportForm onSubmit={handleFinancialReportSubmit} />) }} />
           </div>
         </div>
-        <div className="button-wrapper-center">
+
+        <div className="button-row">
+         <div className="button-wrapper">
+            <GreenButton text={"Компании"} icon={""} onClick={handleButtonClick}/>
+          </div>
           <div className="button-wrapper">
-            <GreenButton text={"Добавить фин. отчет"} icon={""} onClick={() => { handleModalOpen(<CreateFinancialReportComponent/>) }}/>
+            <GreenButton text={"Контакты"} icon={""} onClick={handleButtonClick}/>
           </div>
         </div>
       </div>
