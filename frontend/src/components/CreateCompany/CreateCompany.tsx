@@ -4,6 +4,21 @@ import { companyFields } from '../Form/formConfigs';
 
 const CreateCompanyComponent = ({ }) => {
   const handleSubmit = (data: any) => {
+    if (data.name === '') {
+      alert("Введите название!");
+      return;
+    }
+
+    if (data.city === '') {
+      alert("Введите название города!");
+      return;
+    }
+
+    if (data.activityFieldID === '') {
+      alert("Выберите сферу деятельности!");
+      return;
+    }
+
     console.log(data); 
     alert(JSON.stringify(data));
   };

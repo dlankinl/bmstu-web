@@ -28,9 +28,18 @@ export const signupFields = [
   { name: 'username', type: 'text', placeholder: 'Имя пользователя' },
   { name: 'password', type: 'password', placeholder: 'Пароль' },
   { name: 'verifyPassword', type: 'password', placeholder: 'Подтверждение пароля' },
-]
+];
 
 export const signinFields = [
   { name: 'username', type: 'text', placeholder: 'Имя пользователя' },
   { name: 'password', type: 'password', placeholder: 'Пароль' },
-]
+];
+
+export const financialReportFields = [
+  { name: 'startYear', type: 'text', placeholder: 'Год начала периода' },
+  { name: 'startQuarter', type: 'text', placeholder: 'Квартал начала периода' },
+  { name: 'endYear', type: 'text', placeholder: 'Год конца периода' },
+  { name: 'endQuarter', type: 'text', placeholder: 'Квартал конца периода' },
+  { name: 'revenue', type: 'text', placeholder: 'Выручка' },
+  { name: 'costs', type: 'text', placeholder: 'Расходы' },
+];

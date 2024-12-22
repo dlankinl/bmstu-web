@@ -1,6 +1,7 @@
 import React from 'react';
 import { Company } from './types';
 import ListItem from '../List/Item';
+import { Link } from 'react-router-dom';
 
 const CompanyItem: React.FC<{ company: Company }> = ({ company }) => {
   return (
@@ -10,7 +11,9 @@ const CompanyItem: React.FC<{ company: Company }> = ({ company }) => {
         <>
           <div className="item-details">
             <div className="item-info">
-              <h3>{item.Name}</h3>
+              <Link to={`/companies/${item.ID}`}>
+                <h3>{item.Name}</h3>
+              </Link>
               <p>{item.City}</p>
             </div>
             <p className="item-description">{item.Description}</p>
