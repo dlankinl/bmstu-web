@@ -8,22 +8,23 @@ import { CompanyInfo } from './types';
 import Modal from '../Modal/Modal';
 import FinancialReportComponent from '../FinancialReport/FinancialReport';
 import CreateFinancialReportComponent from '../CreateFinancialReport/CreateFinancialReport';
+import CreateCompanyComponent from '../CreateCompany/CreateCompany';
 
 const CompanyInfoComponent = ({ }) => {
   const { id } = useParams();
   const [values, setValues] = useState<CompanyInfo>();
 
   const [isModalActive, setModalActive] = useState(false);
-  const [modalContent, setModalContent] = useState<React.ReactNode>(null); // State to track modal content
+  const [modalContent, setModalContent] = useState<React.ReactNode>(null);
 
   const handleModalOpen = (content: React.ReactNode) => {
-    setModalContent(content); // Set the content based on button clicked
+    setModalContent(content);
     setModalActive(true);
   };
 
   const handleModalClose = () => {
     setModalActive(false);
-    setModalContent(null); // Reset content when closing
+    setModalContent(null);
 };
 
   useEffect(() => {
@@ -67,16 +68,15 @@ const CompanyInfoComponent = ({ }) => {
 
         <div className="button-row">
           <div className="button-wrapper">
-            <GreenButton text={"Редактировать"} icon={""}/>
+            <GreenButton text={"Редактировать"} icon={""} onClick={() => { handleModalOpen(<CreateCompanyComponent isEditing={true} />) }}
+            />
           </div>
           <div className="button-wrapper">
-            {/* <GreenButton text={"Финансовый отчет"} icon={""} onClick={handleModalOpen}/> */}
             <GreenButton text={"Финансовый отчет"} icon={""} onClick={() => { handleModalOpen(<FinancialReportComponent/>) }}/>
           </div>
         </div>
         <div className="button-wrapper-center">
           <div className="button-wrapper">
-            {/* <GreenButton text={"Добавить фин. отчет"} icon={""}/> */}
             <GreenButton text={"Добавить фин. отчет"} icon={""} onClick={() => { handleModalOpen(<CreateFinancialReportComponent/>) }}/>
           </div>
         </div>

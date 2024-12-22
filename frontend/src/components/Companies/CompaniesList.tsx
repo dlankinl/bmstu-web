@@ -59,7 +59,7 @@ const CompaniesList: React.FC = () => {
         <div>
           {isModalActive && (
             <Modal onClose={handleModalClose}>
-              <CreateCompanyComponent/>
+              <CreateCompanyComponent isEditing={false}/>
             </Modal>
           )}
         </div>

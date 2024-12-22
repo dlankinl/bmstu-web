@@ -6,7 +6,7 @@ interface CreateCompanyComponentProps {
   isEditing?: boolean;
 }
 
-const CreateCompanyComponent: React.FC<CreateCompanyComponentProps> = ({ isEditing }) => {
+const EditCompanyComponent = ({   }) => {
   const handleSubmit = (data: any) => {
     if (data.name === '') {
       alert("Введите название!");
@@ -27,12 +27,9 @@ const CreateCompanyComponent: React.FC<CreateCompanyComponentProps> = ({ isEditi
     alert(JSON.stringify(data));
   };
 
-  const buttonText: string = isEditing ? "Сохранить" : "Добавить";
-  const title: string = isEditing ? "Редактировать компанию" : "Создать компанию";
-
   return (
-    <Form title={title} buttonText={buttonText} fields={companyFields} onSubmit={handleSubmit} />
+    <Form title="Редактировать компанию" buttonText='Сохранить' fields={companyFields} onSubmit={handleSubmit} />
   );
 };
 
-export default CreateCompanyComponent;
+export default EditCompanyComponent;
