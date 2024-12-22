@@ -51,7 +51,7 @@ func newConn(ctx context.Context, cfg *config.Database) (pool *pgxpool.Pool, err
 // @license.name MIT
 // @license.url https://opensource.org/licenses/MIT
 
-// @host localhost:8081
+// @host localhost:80
 // @BasePath /api/v2
 // @query.collection.format multi
 

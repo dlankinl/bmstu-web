@@ -198,7 +198,7 @@ definitions:
       username:
         type: string
     type: object
-host: localhost:8081
+host: localhost:80
 info:
   contact:
     email: lankindl@student.bmstu.ru

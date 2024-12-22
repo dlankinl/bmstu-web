@@ -10,7 +10,7 @@ database:
   db_user: postgres
   db_password: postgres
   db_driver: postgres
-  db_host: db
+  db_host: postgres-master
   db_port: 5432
 
 logger:
