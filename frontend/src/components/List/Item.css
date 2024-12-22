@@ -13,16 +13,19 @@
 }
 
 .item-details {
-  display: flex; /* Flexbox for details layout */
-  justify-content: space-between; /* Space between info and description */
-  width: 100%; /* Full width for details */
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .item-info {
-  display: flex; /* Flexbox for name and city */
-  flex-direction: column; /* Stack name and city vertically */
+  display: flex; 
+  flex-direction: column;
+  justify-content: flex-start; /* Align items to the start (left) */
+  align-items: flex-start; /* Align items to the left */
+  margin-left: 2%;
 }
 
 .item-description {
-  color: #555; /* Lighter color for description text */
+  color: #555;
 }

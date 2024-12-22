@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
 import Form from '../Form/Form';
-import { activityFieldFields } from '../Form/formConfigs';
+import { entrepreneurFields } from '../Form/formConfigs';
 import ErrorPopup from '../ErrorPopup/ErrorPopUp';
 
-function isNumeric(value: any) {
-  return /^\d+(\.\d+)?$/.test(value);
-}
-
-const CreateActivityFieldComponent = ({ }) => {
+const EditEntrepreneurComponent = ({ }) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
 
@@ -17,28 +13,29 @@ const CreateActivityFieldComponent = ({ }) => {
   };
 
   const handleSubmit = (data: any) => {
+    console.log(data)
     if (data.name === '') {
-      setErrorMessage("Введите название!");
+      setErrorMessage("Введите ФИО!");
       setShowErrorPopup(true);
       return;
     }
 
-    if (data.description === '') {
-      setErrorMessage("Введите описание!");
+    if (data.gender === '') {
+      setErrorMessage("Введите пол!");
       setShowErrorPopup(true);
       return;
     }
 
-    if (data.cost === '') {
-      setErrorMessage("Введите вес сферы деятельности!");
+    if (data.birthday === '') {
+      setErrorMessage("Введите дату рождения!");
       setShowErrorPopup(true);
       return;
     }
 
-    if (!isNumeric(data.cost)) {
-      setErrorMessage("Введите положительное число!");
+    if (data.city === '') {
+      setErrorMessage("Введите название города!");
       setShowErrorPopup(true);
-      return
+      return;
     }
 
     console.log(data); 
@@ -47,7 +44,7 @@ const CreateActivityFieldComponent = ({ }) => {
 
   return (
     <>
-      <Form title="Создать сферу деятельности" buttonText='' fields={activityFieldFields} onSubmit={handleSubmit} />
+      <Form title="Редактирование профиля" buttonText="Сохранить" fields={entrepreneurFields} onSubmit={handleSubmit} />
       {showErrorPopup && errorMessage && (
         <ErrorPopup message={errorMessage} onClose={handleCloseError} />
       )}
@@ -55,4 +52,4 @@ const CreateActivityFieldComponent = ({ }) => {
   );
 };
 
-export default CreateActivityFieldComponent;
+export default EditEntrepreneurComponent;

@@ -35,7 +35,9 @@ const Navbar = () => {
         <button className="nav-button">VentureContact</button>
       </div>
       <div className="navbar-buttons">
-        <button className="nav-button">Найти партнера</button>
+        <Link to="/entrepreneurs">
+          <button className="nav-button">Найти партнера</button>
+        </Link>
         <Link to="/activity-fields">
           <button className="nav-button">Сферы деятельности</button>
         </Link>

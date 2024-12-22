@@ -1,21 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Form from '../Form/Form';
 import { signinFields } from '../Form/formConfigs';
+import ErrorPopup from '../ErrorPopup/ErrorPopUp';
 
 const SigninComponent = ({ }) => {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
+
+  const handleCloseError = () => {
+    setShowErrorPopup(false);
+    setErrorMessage(null);
+  };
+
   const handleSubmit = (data: any) => {
     if (data.username === '') {
-      alert("Укажите имя пользователя!");
+      setErrorMessage("Введите имя пользователя!");
+      setShowErrorPopup(true);
       return;
     }
 
     if (data.password === '') {
-      alert("Укажите пароль!");
+      setErrorMessage("Введите пароль!");
+      setShowErrorPopup(true);
       return;
     }
 
     if (data.password.length < 8) {
-      alert("Пароль должен состоять не менее, чем из 8 символов!");
+      setErrorMessage("Пароль должен состоять не менее, чем из 8 символов!");
+      setShowErrorPopup(true);
       return;
     }
 
@@ -24,7 +36,12 @@ const SigninComponent = ({ }) => {
   };
 
   return (
-    <Form title="Аутентификация" fields={signinFields} buttonText='Войти' onSubmit={handleSubmit} />
+    <>
+      <Form title="Аутентификация" fields={signinFields} buttonText='Войти' onSubmit={handleSubmit} />
+      {showErrorPopup && errorMessage && (
+        <ErrorPopup message={errorMessage} onClose={handleCloseError} />
+      )}
+    </>
   );
 };
 

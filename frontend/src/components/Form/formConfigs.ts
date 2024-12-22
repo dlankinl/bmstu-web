@@ -43,3 +43,10 @@ export const financialReportFields = [
   { name: 'revenue', type: 'text', placeholder: 'Выручка' },
   { name: 'costs', type: 'text', placeholder: 'Расходы' },
 ];
+
+export const entrepreneurFields = [
+  { name: 'name', type: 'text', placeholder: 'ФИО' },
+  { name: 'gender', type: 'text', placeholder: 'Пол' },
+  { name: 'birthday', type: 'text', placeholder: 'Дата рождения' },
+  { name: 'city', type: 'text', placeholder: 'Город' },
+];

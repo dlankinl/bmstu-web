@@ -1,0 +1,21 @@
+.item-rating {
+    display: flex;
+    flex-direction: row;
+}
+
+.item-rating {
+    display: flex; /* Use flexbox to align items */
+    align-items: center; /* Center items vertically */
+  }
+  
+  .rating-circle {
+    display: inline-flex; /* Use inline-flex for circle */
+    justify-content: center; /* Center text horizontally */
+    align-items: center; /* Center text vertically */
+    width: 30px; /* Set width and height for the circle */
+    height: 30px;
+    border-radius: 50%; /* Make it circular */
+    background-color: #f0f0f0; /* Background color for the circle */
+    margin-left: 8px; /* Space between name and rating */
+    font-size: 14px; /* Font size for the rating text */
+  }

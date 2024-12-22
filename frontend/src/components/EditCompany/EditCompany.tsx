@@ -1,25 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Form from '../Form/Form';
 import { companyFields } from '../Form/formConfigs';
+import ErrorPopup from '../ErrorPopup/ErrorPopUp';
 
 interface CreateCompanyComponentProps {
   isEditing?: boolean;
 }
 
 const EditCompanyComponent = ({   }) => {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
+
+  const handleCloseError = () => {
+    setShowErrorPopup(false);
+    setErrorMessage(null);
+  };
+
   const handleSubmit = (data: any) => {
     if (data.name === '') {
-      alert("Введите название!");
+      setErrorMessage("Введите название!");
+      setShowErrorPopup(true);
       return;
     }
 
     if (data.city === '') {
-      alert("Введите название города!");
+      setErrorMessage("Введите название города!");
+      setShowErrorPopup(true);
       return;
     }
 
     if (data.activityFieldID === '') {
-      alert("Выберите сферу деятельности!");
+      setErrorMessage("Выберите сферу деятельности!");
+      setShowErrorPopup(true);
       return;
     }
 
@@ -28,7 +40,12 @@ const EditCompanyComponent = ({   }) => {
   };
 
   return (
-    <Form title="Редактировать компанию" buttonText='Сохранить' fields={companyFields} onSubmit={handleSubmit} />
+    <>  
+      <Form title="Редактировать компанию" buttonText='Сохранить' fields={companyFields} onSubmit={handleSubmit} />
+      {showErrorPopup && errorMessage && (
+        <ErrorPopup message={errorMessage} onClose={handleCloseError} />
+      )}
+    </>
   );
 };
 
