@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import './EntrepreneurInfo.css';
 import GreenButton from '../Buttons/GreenButton';
 import FormContainer from '../Form/FormContainer';
@@ -11,12 +10,14 @@ import EditEntrepreneurComponent from '../EditEntrepreneur/EditEntrepreneur';
 import FinancialReportForm from '../FinancialReportForm/FinancialReportForm';
 import ContactsList from '../ContactsList/ContactsList';
 
-const EntrepreneurInfoComponent = ({ }) => {
+const BASE_URL = 'http://localhost:8081/api/v2/entrepreneurs';
+
+const EntrepreneurInfoComponent: React.FC = () => {
   const { id } = useParams();
   const [values, setValues] = useState<EntrepreneurInfo>();
-
   const [isModalActive, setModalActive] = useState(false);
   const [modalContent, setModalContent] = useState<React.ReactNode>(null);
+  const [loading, setLoading] = useState(true); // Loading state
 
   const handleModalOpen = (content: React.ReactNode) => {
     setModalContent(content);
@@ -29,20 +30,20 @@ const EntrepreneurInfoComponent = ({ }) => {
   };
 
   useEffect(() => {
-    const fetchEntrepreneurInfo = () => {
-      const staticEntrepreneurInfo: EntrepreneurInfo = { ID: "1", Name: "Test1", Birthday: "22 декабря 2000 г.", City: "Moscow", Gender: "мужской" };
-      setValues(staticEntrepreneurInfo);
+    const fetchEntrepreneurInfo = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/${id}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data: EntrepreneurInfo = await response.json();
+        setValues(data.entrepreneur); // Assuming data.entrepreneur contains the relevant info
+      } catch (error) {
+        console.error("Error fetching entrepreneur data:", error);
+      } finally {
+        setLoading(false); // Set loading to false after fetching
+      }
     };
-
-    // const fetchData = async () => {
-    //   try {
-    //     const response = await fetch(`https://api.example.com/companies/${id}`);
-    //     const data = await response.json();
-    //     setValues(data);
-    //   } catch (error) {
-    //     console.error("Error fetching company data:", error);
-    //   }
-    // };
 
     fetchEntrepreneurInfo();
   }, [id]); 
@@ -50,8 +51,9 @@ const EntrepreneurInfoComponent = ({ }) => {
   const navigate = useNavigate(); // Initialize the navigate function
 
   const navigateToCompanies = () => {
-    navigate(`/entrepreneurs/${values?.ID}/companies`);
+    navigate(`/entrepreneurs/${values?.id}/companies`);
   };
+  const isAuthenticated = !!localStorage.getItem('authToken');
 
   const handleFinancialReportSubmit = (data: { startYear: number; endYear: number; startQuarter: number; endQuarter: number }) => {
     const reportResults = (
@@ -61,53 +63,66 @@ const EntrepreneurInfoComponent = ({ }) => {
     handleModalOpen(reportResults);
   };
 
-  // TODO: кнопка "Контакты" должна быть доступна только авторизованным пользователям
+  if (loading) {
+    return <div>Загрузка...</div>;
+  }
+
   return (
     <FormContainer>
       <div className="my-component">
         <div className="row">
           <span>ФИО</span>
-          <span>{values?.Name}</span>
+          <span>{values?.fullName}</span>
         </div>
         <div className="row">
           <span>Город</span>
-          <span>{values?.City}</span>
+          <span>{values?.city}</span>
         </div>
         <div className="row">
           <span>Дата рождения</span>
-          <span>{values?.Birthday}</span>
+          <span>{values?.birthday}</span>
         </div>
         <div className="row">
           <span>Пол</span>
-          <span>{values?.Gender}</span>
+            <span>
+              {values?.gender === 'm' ? 'мужской' : 
+              values?.gender === 'w' ? 'женский' : 
+              values?.gender ? values.gender : 'неизвестно'}
+            </span>
         </div>
 
         <div className="button-row">
           <div className="button-wrapper">
-            <GreenButton text={"Редактировать"} icon={""} onClick={() => { handleModalOpen(<EditEntrepreneurComponent />) }}
-            />
+            <GreenButton text={"Редактировать"} icon={""} onClick={() => { handleModalOpen(<EditEntrepreneurComponent />) }} />
           </div>
           <div className="button-wrapper">
             <GreenButton text={"Финансовый отчет"} icon={""} onClick={() => { handleModalOpen(<FinancialReportForm onSubmit={handleFinancialReportSubmit} />) }} />
           </div>
         </div>
 
-        <div className="button-row">
-         <div className="button-wrapper">
-            <GreenButton text={"Компании"} icon={""} onClick={navigateToCompanies}/>
+        {!isAuthenticated ? (
+          <div className="button-wrapper-center">
+            <div className="button-wrapper">
+                <GreenButton text={"Компании"} icon={""} onClick={navigateToCompanies}/>
+            </div>
           </div>
-          <div className="button-wrapper">
-            <GreenButton text={"Контакты"} icon={""} onClick={() => { handleModalOpen(<ContactsList />) }}/>
+        ) : (
+          <div className="button-row">
+            <div className="button-wrapper">
+                <GreenButton text={"Компании"} icon={""} onClick={navigateToCompanies}/>
+            </div>
+            <div className="button-wrapper">
+              <GreenButton text={"Контакты"} icon={""} onClick={() => { handleModalOpen(<ContactsList />) }} />
+            </div>
           </div>
-        </div>
-      </div>
-      <div>
-        {isModalActive && (
-          <Modal onClose={handleModalClose}>
-            {modalContent}
-          </Modal>
         )}
       </div>
+
+      {isModalActive && (
+        <Modal onClose={handleModalClose}>
+          {modalContent}
+        </Modal>
+      )}
     </FormContainer>
   );
 };

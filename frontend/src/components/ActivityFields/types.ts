@@ -1,6 +1,6 @@
 export interface ActivityField {
-  ID: string;
-  Name: string;
-  Description: string;
-  Cost: number;
-}
+  id: string;
+  name: string;
+  description: string;
+  cost: number;
+};

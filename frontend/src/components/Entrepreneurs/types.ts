@@ -1,8 +1,8 @@
 export interface Entrepreneur {
-  ID: string;
-  Name: string;
-  City: string;
-  Birthday: string;
-  Gender: string;
-  Rating: number;
+  id: string;
+  name: string;
+  city: string;
+  birthday: string;
+  gender: string;
+  rating: number | 0.0;
 }

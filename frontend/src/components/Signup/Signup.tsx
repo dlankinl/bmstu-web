@@ -3,7 +3,9 @@ import Form from '../Form/Form';
 import { signupFields } from '../Form/formConfigs';
 import ErrorPopup from '../ErrorPopup/ErrorPopUp';
 
-const SignupComponent = ({ }) => {
+const BASE_URL = 'http://localhost:8081/api/v2/signup';
+
+const SignupComponent: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
 
@@ -12,7 +14,7 @@ const SignupComponent = ({ }) => {
     setErrorMessage(null);
   };
 
-  const handleSubmit = (data: any) => {
+  const handleSubmit = async (data: any) => {
     if (data.username === '') {
       setErrorMessage("Введите имя пользователя!");
       setShowErrorPopup(true);
@@ -42,8 +44,31 @@ const SignupComponent = ({ }) => {
       setShowErrorPopup(true);
       return;
     }
-    console.log(data); 
-    alert(JSON.stringify(data));
+    
+    try {
+      const response = await fetch(BASE_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          login: data.username,
+          password: data.password,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Ошибка регистрации. Попробуйте позже.`);
+      }
+
+      const responseData = await response.json();
+
+      console.log('Signup successful:', responseData);
+      onSuccess();
+    } catch (error) {
+      setErrorMessage(error.message);
+      setShowErrorPopup(true);
+    }
   };
 
   return (

@@ -11,12 +11,12 @@ const CompanyItem: React.FC<{ company: Company }> = ({ company }) => {
         <>
           <div className="item-details">
             <div className="item-info">
-              <Link to={`/companies/${item.ID}`}>
-                <h3>{item.Name}</h3>
+              <Link to={`/companies/${item.id}`}>
+                <h3>{item.name}</h3>
               </Link>
-              <p>{item.City}</p>
+              <p>{item.city}</p>
             </div>
-            <p className="item-description">{item.Description}</p>
+            <p className="item-description">{item.description}</p>
           </div>
         </>
       )}

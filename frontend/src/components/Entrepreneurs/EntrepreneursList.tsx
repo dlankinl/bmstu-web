@@ -4,24 +4,31 @@ import EntrepreneurItem from './EntrepreneurItem';
 import { Entrepreneur } from './types';
 import ListContainer from '../List/ListContainer';
 
+const BASE_URL = 'http://localhost:8081/api/v2/entrepreneurs';
+
 const EntrepreneursList: React.FC = () => {
   const [entrepreneurs, setEntrepreneurs] = useState<Entrepreneur[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0); // State for total pages
+  const itemsPerPage = 3; // Define how many items per page
 
   useEffect(() => {
-    const fetchEntrepreneurs = () => {
-      const staticEntrepreneurs: Entrepreneur[] = [
-        { ID: "1", Name: "Test1", City: "Moscow", Birthday: "22 декабря 2000 г.", Rating: 5.0, Gender: "мужской" },
-        { ID: "2", Name: "Test2", City: "Moscow", Birthday: "23 декабря 2000 г.", Rating: 4.0, Gender: "женский" },
-        { ID: "3", Name: "Test3", City: "Moscow", Birthday: "24 декабря 2000 г.", Rating: 3.0, Gender: "мужской" },
-        { ID: "4", Name: "Test4", City: "Moscow", Birthday: "25 декабря 2000 г.", Rating: 3.0, Gender: "мужской" },
-        { ID: "5", Name: "Test5", City: "Moscow", Birthday: "26 декабря 2000 г.", Rating: 4.0, Gender: "женский" },
-        { ID: "6", Name: "Test6", City: "Moscow", Birthday: "27 декабря 2000 г.", Rating: 5.0, Gender: "мужской" },
-      ];
-      setEntrepreneurs(staticEntrepreneurs);
+    const fetchEntrepreneurs = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}?page=${currentPage}&limit=${itemsPerPage}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setEntrepreneurs(data.entrepreneurs); // Assuming data.entrepreneurs contains an array of entrepreneurs
+        setTotalPages(data.numPages-1); // Set total pages from API response
+      } catch (error) {
+        console.error("Error fetching entrepreneurs:", error);
+      }
     };
 
     fetchEntrepreneurs();
-  }, []);
+  }, [currentPage]); // Fetch data whenever currentPage changes
 
   return (
     <ListContainer>
@@ -29,9 +36,12 @@ const EntrepreneursList: React.FC = () => {
         <ListComponent
           data={entrepreneurs}
           renderItem={(entrepreneur) => (
-            <EntrepreneurItem key={entrepreneur.ID} entrepreneur={entrepreneur} />
+            <EntrepreneurItem key={entrepreneur.id} entrepreneur={entrepreneur} />
           )}
-          itemsPerPage={3}
+          itemsPerPage={itemsPerPage}
+          currentPage={currentPage} // Pass current page to ListComponent
+          totalPages={totalPages} // Pass total pages to ListComponent
+          onPageChange={setCurrentPage} // Pass down the page change handler
         />
       </div>
     </ListContainer>
